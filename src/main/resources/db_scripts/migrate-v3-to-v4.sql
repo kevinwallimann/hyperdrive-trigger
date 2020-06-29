@@ -49,8 +49,8 @@ update job_definition set maps = replace(maps,
 -- 3.3 Add partition columns to ParquetStreamWriter properties
 -- Make sure writer.parquet.partition.columns are not set if ParquetPartitioningStreamWriter is used!
 update job_definition set maps = replace(maps,
-'"writer.parquet.destination',
-'"writer.parquet.partition.columns=hyperdrive_date, hyperdrive_version", "writer.parquet.destination'
+'"writer.parquet.destination.directory',
+'"transformer.add.date.version.destination.directory=${writer.parquet.destination.directory}", "writer.parquet.partition.columns=hyperdrive_date, hyperdrive_version", "writer.parquet.destination'
 ) where maps like '%ParquetPartitioningStreamWriter%';
 
 -- 3.1 Update ParquetPartitioningStreamWriter component
