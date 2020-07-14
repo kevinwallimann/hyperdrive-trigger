@@ -19,6 +19,8 @@ import java.time.LocalDateTime
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype
+import za.co.absa.hyperdrive.trigger.models.enums.DBOperation.Create
+import za.co.absa.hyperdrive.trigger.models.enums.{JobTypes, SensorTypes}
 import za.co.absa.hyperdrive.trigger.models.errors.{ApiError, DatabaseError, GenericDatabaseError}
 import za.co.absa.hyperdrive.trigger.models.{ProjectInfo, _}
 
@@ -26,6 +28,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 trait WorkflowRepository extends Repository {
+  val workflowHistoryRepository: WorkflowHistoryRepository
+
   def insertWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[ApiError, Long]]
   def existsWorkflow(name: String)(implicit ec: ExecutionContext): Future[Boolean]
   def existsOtherWorkflow(name: String, id: Long)(implicit ec: ExecutionContext): Future[Boolean]
@@ -40,17 +44,19 @@ trait WorkflowRepository extends Repository {
 }
 
 @stereotype.Repository
-class WorkflowRepositoryImpl extends WorkflowRepository {
+class WorkflowRepositoryImpl(override val workflowHistoryRepository: WorkflowHistoryRepository) extends WorkflowRepository {
   import profile.api._
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   override def insertWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[ApiError, Long]] = db.run(
     (for {
       workflowId <- workflowTable returning workflowTable.map(_.id) += workflow.toWorkflow.copy(created = LocalDateTime.now())
-      sensorId <- sensorTable += workflow.sensor.copy(workflowId = workflowId)
+      sensorId <- sensorTable returning sensorTable.map(_.id) += workflow.sensor.copy(workflowId = workflowId)
       dagId <- dagDefinitionTable returning dagDefinitionTable.map(_.id) += workflow.dagDefinitionJoined.toDag().copy(workflowId = workflowId)
-      jobId <- jobDefinitionTable ++= workflow.dagDefinitionJoined.jobDefinitions.map(_.copy(dagDefinitionId = dagId))
-    } yield (workflowId)).transactionally.asTry
+      jobId <- jobDefinitionTable returning jobDefinitionTable.map(_.id) ++= workflow.dagDefinitionJoined.jobDefinitions.map(_.copy(dagDefinitionId = dagId))
+    } yield {
+      workflowHistoryRepository.create(workflow.copy(id = workflowId)).map(_=> workflowId)
+    }).flatten.transactionally.asTry
   ).map {
     case Success(workflowId) => Right(workflowId)
     case Failure(ex) =>
@@ -136,7 +142,9 @@ class WorkflowRepositoryImpl extends WorkflowRepository {
       dd <- dagDefinitionTable.filter(_.workflowId === workflow.id).update(workflow.dagDefinitionJoined.toDag())
       deleteJds <- jobDefinitionTable.filter(_.dagDefinitionId === workflow.dagDefinitionJoined.id).delete
       insertJds <- jobDefinitionTable ++= workflow.dagDefinitionJoined.jobDefinitions.map(_.copy(dagDefinitionId = workflow.dagDefinitionJoined.id))
-    } yield {}).transactionally.asTry
+    } yield {
+      workflowHistoryRepository.update(workflow)
+    }).flatten.transactionally.asTry
     ).map {
         case Success(_) => Right((): Unit)
         case Failure(ex) =>
