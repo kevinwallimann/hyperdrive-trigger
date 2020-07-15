@@ -104,3 +104,24 @@ update job_definition set maps = replace(maps,
 '"component.manager=za.co.absa.hyperdrive.ingestor.implementation.manager.checkpoint.CheckpointOffsetManager",',
 ''
 );
+
+-- 6. Remove support for processAllAvailable #149 https://github.com/AbsaOSS/hyperdrive/issues/149
+update job_definition set maps = replace(maps,
+'"ingestor.spark.termination.method=awaitTermination",',
+''
+);
+
+update job_definition set maps = replace(maps,
+'"ingestor.spark.termination.method=AwaitTermination",',
+''
+);
+
+update job_definition set maps = replace(maps,
+'"ingestor.spark.termination.method=ProcessAllAvailable",',
+''
+);
+
+update job_definition set maps = replace(maps,
+'"ingestor.spark.termination.method=processAllAvailable",',
+''
+);
