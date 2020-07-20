@@ -21,68 +21,51 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype
-import za.co.absa.hyperdrive.trigger.models.enums.DBOperation.{Create, Delete, Update}
+import za.co.absa.hyperdrive.trigger.models.enums.DBOperation.{Create, DBOperation, Delete, Update}
 import za.co.absa.hyperdrive.trigger.models._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 trait WorkflowHistoryRepository extends Repository {
   import slick.dbio.DBIO
 
-  def create(workflow: WorkflowJoined)(implicit ec: ExecutionContext): DBIO[Int]
-  def update(workflow: WorkflowJoined)(implicit ec: ExecutionContext): DBIO[Int]
-  def delete(workflow: WorkflowJoined)(implicit ec: ExecutionContext): DBIO[Int]
+  def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
+  def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
+  def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
+
+  def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[WorkflowHistory]]
 }
 
 @stereotype.Repository
 class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
   import profile.api._
-  private val logger = LoggerFactory.getLogger(this.getClass)
-  private lazy val auth = SecurityContextHolder.getContext.getAuthentication
-  private lazy val principal = auth.getPrincipal.asInstanceOf[UserDetails]
 
-  private def insert(workflowHistory: WorkflowHistory)(implicit ec: ExecutionContext): DBIO[Int] = {
-
-    println(SecurityContextHolder.getContext)
-    println(SecurityContextHolder.getContext.getAuthentication.getPrincipal)
+  private def insert(workflow: WorkflowJoined, user: String, operation: DBOperation)(implicit ec: ExecutionContext): DBIO[Int] = {
+    val workflowHistory = WorkflowHistory(
+      changedOn = LocalDateTime.now(),
+      changedBy = user,
+      operation = operation,
+      workflowId = workflow.id,
+      workflow = workflow
+    )
     workflowHistoryTable += workflowHistory
   }
 
-  override def create(workflow: WorkflowJoined)(implicit ec: ExecutionContext): DBIO[Int] = {
-
-    this.insert(
-      WorkflowHistory(
-        changedOn = LocalDateTime.now(),
-        changedBy = "principal.getUsername",
-        operation = Create,
-        workflowId = workflow.id,
-        workflow = workflow
-      )
-    )
+  override def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+    this.insert(workflow, user, Create)
   }
 
-  override def update(workflow: WorkflowJoined)(implicit ec: ExecutionContext): DBIO[Int] = {
-    this.insert(
-      WorkflowHistory(
-        changedOn = LocalDateTime.now(),
-        changedBy = "principal.getUsername",
-        operation = Update,
-        workflowId = workflow.id,
-        workflow = workflow
-      )
-    )
+  override def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+    this.insert(workflow, user, Update)
   }
 
-  override def delete(workflow: WorkflowJoined)(implicit ec: ExecutionContext): DBIO[Int] = {
-    this.insert(
-      WorkflowHistory(
-        changedOn = LocalDateTime.now(),
-        changedBy = "principal.getUsername",
-        operation = Delete,
-        workflowId = workflow.id,
-        workflow = workflow
-      )
-    )
+  override def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+    this.insert(workflow, user, Delete)
   }
 
+  override def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[WorkflowHistory]] = {
+    db.run(
+      workflowHistoryTable.filter(_.workflowId === id).sortBy(_.changedOn).result
+    )
+  }
 }

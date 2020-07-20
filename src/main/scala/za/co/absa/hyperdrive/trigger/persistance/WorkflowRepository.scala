@@ -30,14 +30,14 @@ import scala.util.{Failure, Success}
 trait WorkflowRepository extends Repository {
   val workflowHistoryRepository: WorkflowHistoryRepository
 
-  def insertWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[ApiError, Long]]
+  def insertWorkflow(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): Future[Either[ApiError, Long]]
   def existsWorkflow(name: String)(implicit ec: ExecutionContext): Future[Boolean]
   def existsOtherWorkflow(name: String, id: Long)(implicit ec: ExecutionContext): Future[Boolean]
   def getWorkflow(id: Long)(implicit ec: ExecutionContext): Future[WorkflowJoined]
   def getWorkflows()(implicit ec: ExecutionContext): Future[Seq[Workflow]]
   def getWorkflowsByProjectName(projectName: String)(implicit ec: ExecutionContext): Future[Seq[Workflow]]
   def deleteWorkflow(id: Long)(implicit ec: ExecutionContext): Future[Unit]
-  def updateWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[ApiError, Unit]]
+  def updateWorkflow(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): Future[Either[ApiError, Unit]]
   def switchWorkflowActiveState(id: Long)(implicit ec: ExecutionContext): Future[Unit]
   def getProjects()(implicit ec: ExecutionContext): Future[Seq[String]]
   def getProjectsInfo()(implicit ec: ExecutionContext): Future[Seq[ProjectInfo]]
@@ -48,14 +48,14 @@ class WorkflowRepositoryImpl(override val workflowHistoryRepository: WorkflowHis
   import profile.api._
   private val logger = LoggerFactory.getLogger(this.getClass)
 
-  override def insertWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[ApiError, Long]] = db.run(
+  override def insertWorkflow(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): Future[Either[ApiError, Long]] = db.run(
     (for {
       workflowId <- workflowTable returning workflowTable.map(_.id) += workflow.toWorkflow.copy(created = LocalDateTime.now())
       sensorId <- sensorTable returning sensorTable.map(_.id) += workflow.sensor.copy(workflowId = workflowId)
       dagId <- dagDefinitionTable returning dagDefinitionTable.map(_.id) += workflow.dagDefinitionJoined.toDag().copy(workflowId = workflowId)
       jobId <- jobDefinitionTable returning jobDefinitionTable.map(_.id) ++= workflow.dagDefinitionJoined.jobDefinitions.map(_.copy(dagDefinitionId = dagId))
     } yield {
-      workflowHistoryRepository.create(workflow.copy(id = workflowId)).map(_=> workflowId)
+      workflowHistoryRepository.create(workflow.copy(id = workflowId), user).map(_=> workflowId)
     }).flatten.transactionally.asTry
   ).map {
     case Success(workflowId) => Right(workflowId)
@@ -135,7 +135,7 @@ class WorkflowRepositoryImpl(override val workflowHistoryRepository: WorkflowHis
     )
   }
 
-  override def updateWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[ApiError, Unit]] = {
+  override def updateWorkflow(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): Future[Either[ApiError, Unit]] = {
     db.run((for {
       w <- workflowTable.filter(_.id === workflow.id).update(workflow.toWorkflow.copy(updated = Option(LocalDateTime.now())))
       s <- sensorTable.filter(_.workflowId === workflow.id).update(workflow.sensor)
@@ -143,7 +143,7 @@ class WorkflowRepositoryImpl(override val workflowHistoryRepository: WorkflowHis
       deleteJds <- jobDefinitionTable.filter(_.dagDefinitionId === workflow.dagDefinitionJoined.id).delete
       insertJds <- jobDefinitionTable ++= workflow.dagDefinitionJoined.jobDefinitions.map(_.copy(dagDefinitionId = workflow.dagDefinitionJoined.id))
     } yield {
-      workflowHistoryRepository.update(workflow)
+      workflowHistoryRepository.update(workflow, user)
     }).flatten.transactionally.asTry
     ).map {
         case Success(_) => Right((): Unit)

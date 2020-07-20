@@ -36,6 +36,7 @@ import { texts } from '../../constants/texts.constants';
 import { WorkflowModel, WorkflowModelFactory } from '../../models/workflow.model';
 import { WorkflowRequestModel } from '../../models/workflowRequest.model';
 import { ApiErrorModel } from '../../models/errors/apiError.model';
+import {WorkflowHistoryModel} from "../../models/workflowHistory.model";
 
 @Injectable()
 export class WorkflowsEffects {
@@ -328,6 +329,44 @@ export class WorkflowsEffects {
           }
         }),
       );
+    }),
+  );
+
+  @Effect({ dispatch: true })
+  workflowHistoryLoad = this.actions.pipe(
+    ofType(WorkflowActions.LOAD_WORKFLOW_HISTORY),
+    withLatestFrom(this.store.select(selectWorkflowState)),
+    switchMap(([action, state]: [WorkflowActions.StartWorkflowInitialization, fromWorkflows.State]) => {
+      return this.workflowService.getWorkflowHistory().pipe(
+        mergeMap((result: WorkflowHistoryModel[]) => {
+          // this.toastrService.success(texts.UPDATE_WORKFLOW_SUCCESS_NOTIFICATION);
+          return [
+            {
+              type: WorkflowActions.LOAD_WORKFLOW_HISTORY_SUCCESS,
+              payload: result,
+            },
+          ];
+        }),
+        // catchError((errorResponse) => {
+        //   if (this.isBackendValidationError(errorResponse)) {
+        //     return [
+        //       {
+        //         type: WorkflowActions.UPDATE_WORKFLOW_FAILURE,
+        //         payload: errorResponse.map((err) => err.message),
+        //       },
+        //     ];
+        //   } else {
+        //     this.toastrService.error(texts.UPDATE_WORKFLOW_FAILURE_NOTIFICATION);
+        //     return [
+        //       {
+        //         type: WorkflowActions.UPDATE_WORKFLOW_FAILURE,
+        //         payload: [],
+        //       },
+        //     ];
+        //   }
+        // }),
+      );
+
     }),
   );
 

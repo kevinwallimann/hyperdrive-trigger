@@ -27,6 +27,7 @@ import {
   FormPartFactory,
   PartValidationFactory,
 } from '../../models/workflowFormParts.model';
+import {WorkflowHistoryModel} from "../../models/workflowHistory.model";
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +38,14 @@ export class WorkflowService {
   getProjects(): Observable<ProjectModel[]> {
     return this.httpClient
       .get<ProjectModel[]>(api.GET_PROJECTS, { observe: 'response' })
+      .pipe(map((_) => _.body));
+  }
+
+  getWorkflowHistory(): Observable<WorkflowHistoryModel[]> {
+    const params = new HttpParams().set('id', (239).toString());
+
+    return this.httpClient
+      .get<WorkflowHistoryModel[]>(api.GET_WORKFLOW_HISTORY, { params: params, observe: 'response' })
       .pipe(map((_) => _.body));
   }
 

@@ -17,6 +17,8 @@ package za.co.absa.hyperdrive.trigger.api.rest.services
 
 import java.time.LocalDateTime
 
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import za.co.absa.hyperdrive.trigger.models.errors.ApiError
 import za.co.absa.hyperdrive.trigger.models.{Project, ProjectInfo, Workflow, WorkflowHistory, WorkflowJoined}
@@ -48,10 +50,11 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
                           override val workflowValidationService: WorkflowValidationService) extends WorkflowService {
 
   def createWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[Seq[ApiError], WorkflowJoined]] = {
+    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
     for {
       validationErrors <- workflowValidationService.validateOnInsert(workflow)
       result <- doIf(validationErrors, () => {
-        workflowRepository.insertWorkflow(workflow).flatMap {
+        workflowRepository.insertWorkflow(workflow, user).flatMap {
           case Left(error) => Future.successful(Left(error))
           case Right(workflowId) => getWorkflow(workflowId).map(Right(_))
         }
@@ -78,6 +81,7 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
   }
 
   override def updateWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[Seq[ApiError], WorkflowJoined]] = {
+    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
     for {
       validationErrors <- workflowValidationService.validateOnUpdate(workflow)
       result <- doIf(validationErrors, () => {
@@ -99,7 +103,7 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
             )
           )
 
-          workflowRepository.updateWorkflow(updatedWorkflow).flatMap {
+          workflowRepository.updateWorkflow(updatedWorkflow, user).flatMap {
             case Left(error) => Future.successful(Left(error))
             case Right(_) => getWorkflow(workflow.id).map(Right(_))
           }

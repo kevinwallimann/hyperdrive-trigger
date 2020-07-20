@@ -22,6 +22,8 @@ export const routeNames = {
   WORKFLOWS_HOME: '',
   WORKFLOW_ACTION: ':mode',
   WORKFLOW_ACTION_WITH_ID: ':mode/:id',
+  WORKFLOW_HISTORY_LIST: 'show/:id/history',
+  WORKFLOW_HISTORY: ':id',
   RUNS: 'runs',
 };
 
@@ -35,4 +37,7 @@ export const absoluteRoutes = {
   EDIT_WORKFLOW: `/${routeNames.WORKFLOWS}/${workflowModes.EDIT}`,
   COPY_WORKFLOW: `/${routeNames.WORKFLOWS}/${workflowModes.COPY}`,
   RUNS: `/${routeNames.RUNS}`,
+  WORKFLOW_HISTORY_LIST(id: number): string {
+    return `/${routeNames.WORKFLOWS}/${workflowModes.SHOW}/${id}/history`
+  }
 };

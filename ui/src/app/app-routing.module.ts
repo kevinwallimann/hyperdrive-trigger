@@ -23,6 +23,8 @@ import { LogInGuardService } from './services/guards/logInGuard.service';
 import { routeNames } from './constants/routes.constants';
 import { WorkflowsHomeComponent } from './components/workflows/workflows-home/workflows-home.component';
 import { WorkflowComponent } from './components/workflows/workflow/workflow.component';
+import {HistoryListComponent} from "./components/workflows/workflow/history-list/history-list.component";
+import {HistoryComponent} from "./components/workflows/workflow/history-list/history/history.component";
 
 const routes: Routes = [
   { path: routeNames.DEFAULT, redirectTo: routeNames.WORKFLOWS, pathMatch: 'full', canActivate: [AuthGuardService] },
@@ -33,6 +35,7 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     children: [
       { path: routeNames.WORKFLOWS_HOME, component: WorkflowsHomeComponent, pathMatch: 'full' },
+      { path: routeNames.WORKFLOW_HISTORY_LIST, component: HistoryListComponent },
       { path: routeNames.WORKFLOW_ACTION, component: WorkflowComponent },
       { path: routeNames.WORKFLOW_ACTION_WITH_ID, component: WorkflowComponent },
     ],

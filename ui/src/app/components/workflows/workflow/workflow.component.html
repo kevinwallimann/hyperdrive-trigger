@@ -41,6 +41,10 @@
       <clr-icon shape="close"></clr-icon>
       Delete
     </button>
+    <button type="button" class="btn btn-sm btn-secondary" [routerLink]="[absoluteRoutes.WORKFLOW_HISTORY_LIST(id)]">
+      <clr-icon shape="history"></clr-icon>
+      History
+    </button>
   </div>
 
   <form clrForm (ngSubmit)="mode != workflowModes.EDIT ? createWorkflow() : updateWorkflow()" #workflowForm="ngForm" novalidate>

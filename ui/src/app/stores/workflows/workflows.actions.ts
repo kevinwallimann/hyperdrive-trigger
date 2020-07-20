@@ -63,6 +63,10 @@ export const UPDATE_WORKFLOW_FAILURE = 'UPDATE_WORKFLOW_FAILURE';
 
 export const REMOVE_BACKEND_VALIDATION_ERROR = 'REMOVE_BACKEND_VALIDATION_ERROR';
 
+export const LOAD_WORKFLOW_HISTORY = 'LOAD_WORKFLOW_HISTORY';
+export const LOAD_WORKFLOW_HISTORY_SUCCESS = 'LOAD_WORKFLOW_HISTORY_SUCCESS';
+export const LOAD_WORKFLOW_HISTORY_FAILURE = 'LOAD_WORKFLOW_HISTORY_FAILURE';
+
 export class InitializeWorkflows implements Action {
   readonly type = INITIALIZE_WORKFLOWS;
 }
@@ -219,6 +223,16 @@ export class RemoveBackendValidationError implements Action {
   constructor(public payload: number) {}
 }
 
+export class LoadWorkflowHistory implements Action {
+  readonly type = LOAD_WORKFLOW_HISTORY;
+  constructor(public payload: number) {}
+}
+
+export class LoadWorkflowHistorySuccess implements Action {
+  readonly type = LOAD_WORKFLOW_HISTORY_SUCCESS;
+  constructor(public payload: any[]) {}
+}
+
 export type WorkflowsActions =
   | InitializeWorkflows
   | InitializeWorkflowsSuccess
@@ -251,4 +265,6 @@ export type WorkflowsActions =
   | UpdateWorkflow
   | UpdateWorkflowSuccess
   | UpdateWorkflowFailure
-  | RemoveBackendValidationError;
+  | RemoveBackendValidationError
+  | LoadWorkflowHistory
+  | LoadWorkflowHistorySuccess;

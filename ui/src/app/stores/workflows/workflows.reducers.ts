@@ -36,6 +36,7 @@ export interface State {
       jobs: JobEntryModel[];
     };
   };
+  workflowHistory: any[];
   workflowFormParts: WorkflowFormPartsModel;
 }
 
@@ -54,6 +55,7 @@ const initialState: State = {
       jobs: [],
     },
   },
+  workflowHistory: [],
   workflowFormParts: undefined,
 };
 
@@ -402,6 +404,23 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
             ...state.workflowAction.backendValidationErrors.slice(action.payload + 1),
           ],
         },
+      };
+    case WorkflowsActions.LOAD_WORKFLOW_HISTORY:
+      return {
+        ...state,
+        workflowAction: {
+          ...state.workflowAction,
+          loading: true,
+        },
+      };
+    case WorkflowsActions.LOAD_WORKFLOW_HISTORY_SUCCESS:
+      return {
+        ...state,
+        workflowAction: {
+          ...state.workflowAction,
+          loading: false,
+        },
+        workflowHistory: action.payload
       };
     default:
       return state;
