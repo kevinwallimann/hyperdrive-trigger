@@ -5,25 +5,19 @@
 </div>
 
 <div *ngIf="!loading" class="asdasd">
-        <clr-datagrid>
-          <clr-dg-column>Operation</clr-dg-column>
-          <clr-dg-column>Change By</clr-dg-column>
-          <clr-dg-column>Changed on</clr-dg-column>
 
-          <clr-dg-row *ngFor="let user of workflowHistory">
+  <clr-datagrid [(clrDgSelected)]="selected">
+    <clr-dg-column>Operation</clr-dg-column>
+    <clr-dg-column>Change By</clr-dg-column>
+    <clr-dg-column>Changed on</clr-dg-column>
 
-            <clr-dg-action-overflow>
-              <button type="button" class="action-item">
-                <clr-icon shape="eye"></clr-icon>
-                Show
-              </button>
-            </clr-dg-action-overflow>
+    <clr-dg-row [clrDgSelectable]="selectable" *clrDgItems="let user of workflowHistory" [clrDgItem]="user">
+      <clr-dg-cell>{{user.operation.name}}</clr-dg-cell>
+      <clr-dg-cell>{{user.changedBy}}</clr-dg-cell>
+      <clr-dg-cell>{{user.changedOn | date:'medium'}}</clr-dg-cell>
+    </clr-dg-row>
 
-            <clr-dg-cell>{{user.operation.name}}</clr-dg-cell>
-            <clr-dg-cell>{{user.changedBy}}</clr-dg-cell>
-            <clr-dg-cell>{{user.changedOn | date:'medium'}}</clr-dg-cell>
-          </clr-dg-row>
+    <clr-dg-footer>{{workflowHistory.length}} users</clr-dg-footer>
+  </clr-datagrid>
 
-          <clr-dg-footer>{{workflowHistory.length}} users</clr-dg-footer>
-        </clr-datagrid>
 </div>

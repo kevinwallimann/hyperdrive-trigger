@@ -36,7 +36,7 @@ import { texts } from '../../constants/texts.constants';
 import { WorkflowModel, WorkflowModelFactory } from '../../models/workflow.model';
 import { WorkflowRequestModel } from '../../models/workflowRequest.model';
 import { ApiErrorModel } from '../../models/errors/apiError.model';
-import {WorkflowHistoryModel} from "../../models/workflowHistory.model";
+import { WorkflowHistoryModel } from '../../models/workflowHistory.model';
 
 @Injectable()
 export class WorkflowsEffects {
@@ -366,7 +366,6 @@ export class WorkflowsEffects {
         //   }
         // }),
       );
-
     }),
   );
 

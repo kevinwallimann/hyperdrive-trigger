@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-import {SensorModel} from './sensor.model';
-import {DagDefinitionJoinedModel} from './dagDefinitionJoined.model';
-import {WorkflowJoinedModel} from "./workflowJoined.model";
+import { SensorModel } from './sensor.model';
+import { DagDefinitionJoinedModel } from './dagDefinitionJoined.model';
+import { WorkflowJoinedModel } from './workflowJoined.model';
 
 export type WorkflowHistoryModel = {
   changedOn: Date;
@@ -35,14 +35,14 @@ export class WorkflowHistoryModelFactory {
     changedBy: string,
     operation: OperationType,
     workflowId: number,
-    workflow: WorkflowJoinedModel
+    workflow: WorkflowJoinedModel,
   ): WorkflowHistoryModel {
     return {
       changedOn: changedOn,
       changedBy: changedBy,
       operation: operation,
       workflowId: workflowId,
-      workflow: workflow
+      workflow: workflow,
     };
   }
 }

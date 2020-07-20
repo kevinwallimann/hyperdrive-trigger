@@ -27,7 +27,7 @@ import {
   FormPartFactory,
   PartValidationFactory,
 } from '../../models/workflowFormParts.model';
-import {WorkflowHistoryModel} from "../../models/workflowHistory.model";
+import { WorkflowHistoryModel } from '../../models/workflowHistory.model';
 
 @Injectable({
   providedIn: 'root',

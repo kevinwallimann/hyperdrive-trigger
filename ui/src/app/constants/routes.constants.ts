@@ -38,6 +38,6 @@ export const absoluteRoutes = {
   COPY_WORKFLOW: `/${routeNames.WORKFLOWS}/${workflowModes.COPY}`,
   RUNS: `/${routeNames.RUNS}`,
   WORKFLOW_HISTORY_LIST(id: number): string {
-    return `/${routeNames.WORKFLOWS}/${workflowModes.SHOW}/${id}/history`
-  }
+    return `/${routeNames.WORKFLOWS}/${workflowModes.SHOW}/${id}/history`;
+  },
 };

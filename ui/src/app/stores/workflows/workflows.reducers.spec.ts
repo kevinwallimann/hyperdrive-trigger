@@ -65,6 +65,7 @@ describe('WorkflowsReducers', () => {
         jobs: [job1, job0, job2, job3],
       },
     },
+    workflowHistory: [],
     workflowFormParts: undefined,
   };
 

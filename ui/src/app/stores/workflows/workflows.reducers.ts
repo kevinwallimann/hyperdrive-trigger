@@ -420,7 +420,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
           ...state.workflowAction,
           loading: false,
         },
-        workflowHistory: action.payload
+        workflowHistory: action.payload,
       };
     default:
       return state;
