@@ -41,12 +41,12 @@ export class HistoryModelFactory {
 
 export type WorkflowHistoryModel = {
   history: HistoryModel;
-  workflowId: Number;
+  workflowId: number;
   workflow: WorkflowJoinedModel;
 };
 
 export class WorkflowHistoryModelFactory {
-  static create(history: HistoryModel, workflowId: Number, workflow: WorkflowJoinedModel): WorkflowHistoryModel {
+  static create(history: HistoryModel, workflowId: number, workflow: WorkflowJoinedModel): WorkflowHistoryModel {
     return {
       history: history,
       workflowId: workflowId,
@@ -55,16 +55,19 @@ export class WorkflowHistoryModelFactory {
   }
 }
 
-export type WorkflowHistForComparisonModel = {
-  left: WorkflowHistoryModel;
-  right: WorkflowHistoryModel;
+export type WorkflowHistoriesForComparisonModel = {
+  leftWorkflowHistory: WorkflowHistoryModel;
+  rightWorkflowHistory: WorkflowHistoryModel;
 };
 
-export class WorkflowHistForComparisonModelFactory {
-  static create(left: WorkflowHistoryModel, right: WorkflowHistoryModel): WorkflowHistForComparisonModel {
+export class WorkflowHistoriesForComparisonModelFactory {
+  static create(
+    leftWorkflowHistory: WorkflowHistoryModel,
+    rightWorkflowHistory: WorkflowHistoryModel,
+  ): WorkflowHistoriesForComparisonModel {
     return {
-      left: left,
-      right: right,
+      leftWorkflowHistory: leftWorkflowHistory,
+      rightWorkflowHistory: rightWorkflowHistory,
     };
   }
 }

@@ -34,7 +34,7 @@ class WorkflowHistoryController @Inject()(workflowHistoryService: WorkflowHistor
   }
 
   @GetMapping(path = Array("/workflowsForComparison"))
-  def getWorkflowsForComparison(@RequestParam leftHistoryId: Long, @RequestParam rightHistoryId: Long): CompletableFuture[WorkflowsForComparison] = {
+  def getWorkflowsForComparison(@RequestParam leftHistoryId: Long, @RequestParam rightHistoryId: Long): CompletableFuture[WorkflowHistoriesForComparison] = {
     workflowHistoryService.getWorkflowsForComparison(leftHistoryId, rightHistoryId).toJava.toCompletableFuture
   }
 

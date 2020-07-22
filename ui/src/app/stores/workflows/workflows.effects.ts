@@ -36,7 +36,7 @@ import { texts } from '../../constants/texts.constants';
 import { WorkflowModel, WorkflowModelFactory } from '../../models/workflow.model';
 import { WorkflowRequestModel } from '../../models/workflowRequest.model';
 import { ApiErrorModel } from '../../models/errors/apiError.model';
-import { WorkflowHistForComparisonModel, HistoryModel } from '../../models/historyModel';
+import { WorkflowHistoriesForComparisonModel, HistoryModel } from '../../models/historyModel';
 import { WorkflowEntryModel } from '../../models/workflowEntry.model';
 import { JobEntryModel } from '../../models/jobEntry.model';
 
@@ -359,7 +359,7 @@ export class WorkflowsEffects {
     switchMap((action: WorkflowActions.LoadWorkflowsHistForComparison) => {
       return this.workflowService.getWorkflowHistForComparison(action.payload.left, action.payload.right);
     }),
-    mergeMap((workflowHistForComparison: WorkflowHistForComparisonModel) => {
+    mergeMap((workflowHistForComparison: WorkflowHistoriesForComparisonModel) => {
       console.log('asdasd');
       return this.workflowService.getWorkflowDynamicFormParts().pipe(
         mergeMap((workflowComponents: DynamicFormParts) => {
@@ -370,8 +370,8 @@ export class WorkflowsEffects {
             workflowFormPartsConsts.JOB.JOB_TYPE,
             workflowComponents,
           );
-          const left = new WorkflowDataModel(workflowHistForComparison.left.workflow, workflowFormParts.dynamicParts);
-          const right = new WorkflowDataModel(workflowHistForComparison.right.workflow, workflowFormParts.dynamicParts);
+          const left = new WorkflowDataModel(workflowHistForComparison.leftWorkflowHistory.workflow, workflowFormParts.dynamicParts);
+          const right = new WorkflowDataModel(workflowHistForComparison.rightWorkflowHistory.workflow, workflowFormParts.dynamicParts);
           console.log('workflowFormParts', workflowFormParts);
           return [
             {

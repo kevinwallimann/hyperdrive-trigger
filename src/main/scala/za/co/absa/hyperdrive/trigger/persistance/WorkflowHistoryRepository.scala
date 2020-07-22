@@ -31,7 +31,7 @@ trait WorkflowHistoryRepository extends Repository {
   private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
 
   def getWorkflowHistory(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
-  def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison]
+  def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowHistoriesForComparison]
 }
 
 @stereotype.Repository
@@ -76,7 +76,7 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
     )))
   }
 
-  override def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison] = {
+  override def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowHistoriesForComparison] = {
     val queryResult = db.run(
       (for {
         leftWorkflowHistory <- workflowHistoryTable if leftWorkflowHistory.id === leftHistoryId
@@ -88,7 +88,7 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
 
     queryResult.map(
       _.headOption.map{ workflowsForComparisonTouple =>
-        WorkflowsForComparison(workflowsForComparisonTouple._1, workflowsForComparisonTouple._2)
+        WorkflowHistoriesForComparison(workflowsForComparisonTouple._1, workflowsForComparisonTouple._2)
       }.getOrElse(
         throw new Exception(s"Workflow history with ${leftHistoryId} or ${rightHistoryId} does not exist.")
       )
