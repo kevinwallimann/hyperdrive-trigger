@@ -460,12 +460,12 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
         },
         workflowHistory: action.payload,
       };
-    case WorkflowsActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON:
+    case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON:
       return {
         ...state,
         loading: true,
       };
-    case WorkflowsActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS:
+    case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -475,7 +475,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
           right: action.payload.right,
         },
       };
-    case WorkflowsActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE:
+    case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE:
       return {
         ...state,
         loading: false,

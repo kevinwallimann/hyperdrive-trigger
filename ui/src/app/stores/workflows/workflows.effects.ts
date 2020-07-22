@@ -355,7 +355,7 @@ export class WorkflowsEffects {
 
   @Effect({ dispatch: true })
   workflowHistForComparisonLoad = this.actions.pipe(
-    ofType(WorkflowActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON),
+    ofType(WorkflowActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON),
     switchMap((action: WorkflowActions.LoadWorkflowsHistForComparison) => {
       return this.workflowService.getWorkflowHistForComparison(action.payload.left, action.payload.right);
     }),
@@ -375,7 +375,7 @@ export class WorkflowsEffects {
           console.log('workflowFormParts', workflowFormParts);
           return [
             {
-              type: WorkflowActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS,
+              type: WorkflowActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS,
               payload: {
                 workflowFormParts: workflowFormParts,
                 left: {
@@ -395,7 +395,7 @@ export class WorkflowsEffects {
         catchError(() => {
           return [
             {
-              type: WorkflowActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE,
+              type: WorkflowActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE,
             },
           ];
         }),

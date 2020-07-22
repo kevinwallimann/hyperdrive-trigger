@@ -70,9 +70,9 @@ export const LOAD_WORKFLOW_HISTORY = 'LOAD_WORKFLOW_HISTORY';
 export const LOAD_WORKFLOW_HISTORY_SUCCESS = 'LOAD_WORKFLOW_HISTORY_SUCCESS';
 export const LOAD_WORKFLOW_HISTORY_FAILURE = 'LOAD_WORKFLOW_HISTORY_FAILURE';
 
-export const LOAD_WORKFLOWS_HIST_FOR_COMPARISON = 'LOAD_WORKFLOWS_HIST_FOR_COMPARISON';
-export const LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS = 'LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS';
-export const LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE = 'LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE';
+export const LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON = 'LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON';
+export const LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS = 'LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS';
+export const LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE = 'LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE';
 
 export class InitializeWorkflows implements Action {
   readonly type = INITIALIZE_WORKFLOWS;
@@ -250,13 +250,17 @@ export class LoadWorkflowHistorySuccess implements Action {
   constructor(public payload: any[]) {}
 }
 
+export class LoadWorkflowHistoryFailure implements Action {
+  readonly type = LOAD_WORKFLOW_HISTORY_FAILURE;
+}
+
 export class LoadWorkflowsHistForComparison implements Action {
-  readonly type = LOAD_WORKFLOWS_HIST_FOR_COMPARISON;
+  readonly type = LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON;
   constructor(public payload: { left: number; right: number }) {}
 }
 
 export class LoadWorkflowsHistForComparisonSuccess implements Action {
-  readonly type = LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS;
+  readonly type = LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS;
   constructor(
     public payload: {
       workflowFormParts: WorkflowFormPartsModel;
@@ -275,7 +279,7 @@ export class LoadWorkflowsHistForComparisonSuccess implements Action {
 }
 
 export class LoadWorkflowsHistForComparisonFailure implements Action {
-  readonly type = LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE;
+  readonly type = LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE;
 }
 
 export type WorkflowsActions =
@@ -315,6 +319,7 @@ export type WorkflowsActions =
   | SetWorkflowsFilters
   | LoadWorkflowHistory
   | LoadWorkflowHistorySuccess
+  | LoadWorkflowHistoryFailure
   | LoadWorkflowsHistForComparison
   | LoadWorkflowsHistForComparisonSuccess
   | LoadWorkflowsHistForComparisonFailure;
