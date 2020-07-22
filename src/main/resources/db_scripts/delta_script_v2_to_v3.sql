@@ -13,10 +13,11 @@
  * limitations under the License.
  */
 
-export const workflowModes = {
-  SHOW: 'show',
-  CREATE: 'create',
-  EDIT: 'edit',
-  COPY: 'copy',
-  COMP: 'comp',
-};
+create table "workflow_history" (
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
+  "changed_on" TIMESTAMP NOT NULL,
+  "changed_by" VARCHAR NOT NULL,
+  "operation" VARCHAR NOT NULL,
+  "workflow_id" BIGINT NOT NULL,
+  "workflow" VARCHAR NOT NULL
+);

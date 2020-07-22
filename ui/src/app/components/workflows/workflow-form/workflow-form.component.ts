@@ -1,38 +1,40 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {WorkflowEntryModel} from "../../../models/workflowEntry.model";
-import {JobEntryModel} from "../../../models/jobEntry.model";
-import {WorkflowFormPartsModel} from "../../../models/workflowFormParts.model";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { WorkflowEntryModel } from '../../../models/workflowEntry.model';
+import { JobEntryModel } from '../../../models/jobEntry.model';
+import { WorkflowFormPartsModel } from '../../../models/workflowFormParts.model';
 import { workflowModes } from 'src/app/models/enums/workflowModes.constants';
 import { absoluteRoutes } from 'src/app/constants/routes.constants';
-import {ConfirmationDialogTypes} from "../../../constants/confirmationDialogTypes.constants";
-import {texts} from "../../../constants/texts.constants";
+import { ConfirmationDialogTypes } from '../../../constants/confirmationDialogTypes.constants';
+import { texts } from '../../../constants/texts.constants';
 import {
   CreateWorkflow,
-  DeleteWorkflow, RemoveBackendValidationError,
+  DeleteWorkflow,
+  RemoveBackendValidationError,
   RunWorkflow,
-  SwitchWorkflowActiveState, UpdateWorkflow
-} from "../../../stores/workflows/workflows.actions";
-import {Store} from "@ngrx/store";
-import {AppState} from "../../../stores/app.reducers";
-import {Subscription} from "rxjs";
-import {ConfirmationDialogService} from "../../../services/confirmation-dialog/confirmation-dialog.service";
-import {PreviousRouteService} from "../../../services/previousRoute/previous-route.service";
-import {Router} from "@angular/router";
+  SwitchWorkflowActiveState,
+  UpdateWorkflow,
+} from '../../../stores/workflows/workflows.actions';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../stores/app.reducers';
+import { Subscription } from 'rxjs';
+import { ConfirmationDialogService } from '../../../services/confirmation-dialog/confirmation-dialog.service';
+import { PreviousRouteService } from '../../../services/previousRoute/previous-route.service';
+import { Router } from '@angular/router';
 import cloneDeep from 'lodash/cloneDeep';
 
 @Component({
   selector: 'app-workflow-form',
   templateUrl: './workflow-form.component.html',
-  styleUrls: ['./workflow-form.component.scss']
+  styleUrls: ['./workflow-form.component.scss'],
 })
-export class WorkflowFormComponent implements OnInit, OnDestroy {
+export class WorkflowFormComponent implements OnDestroy {
   @ViewChild('workflowForm') workflowForm;
   @Output() jobsUnfold: EventEmitter<any> = new EventEmitter();
   @Input() workflowData: {
     details: WorkflowEntryModel[];
     sensor: WorkflowEntryModel[];
     jobs: JobEntryModel[];
-  }
+  };
   @Input() workflowFormParts: WorkflowFormPartsModel;
   @Input() id: number;
   @Input() mode: string;
@@ -50,7 +52,7 @@ export class WorkflowFormComponent implements OnInit, OnDestroy {
   confirmationDialogServiceSubscription: Subscription = null;
   runWorkflowDialogSubscription: Subscription = null;
 
-  isWorkflowActive: boolean = true;
+  isWorkflowActive = true;
 
   constructor(
     private store: Store<AppState>,
@@ -58,8 +60,6 @@ export class WorkflowFormComponent implements OnInit, OnDestroy {
     private previousRouteService: PreviousRouteService,
     private router: Router,
   ) {}
-
-  ngOnInit(): void { }
 
   toggleDetailsAccordion() {
     this.isDetailsAccordionHidden = !this.isDetailsAccordionHidden;
@@ -161,5 +161,4 @@ export class WorkflowFormComponent implements OnInit, OnDestroy {
     !!this.confirmationDialogServiceSubscription && this.confirmationDialogServiceSubscription.unsubscribe();
     !!this.runWorkflowDialogSubscription && this.runWorkflowDialogSubscription.unsubscribe();
   }
-
 }

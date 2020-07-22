@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppState, selectWorkflowState } from '../../../stores/app.reducers';
 import { Subscription } from 'rxjs';
@@ -33,9 +33,9 @@ import { PreviousRouteService } from '../../../services/previousRoute/previous-r
 import { ConfirmationDialogService } from '../../../services/confirmation-dialog/confirmation-dialog.service';
 import { ConfirmationDialogTypes } from '../../../constants/confirmationDialogTypes.constants';
 import { texts } from '../../../constants/texts.constants';
-import {WorkflowEntryModel} from "../../../models/workflowEntry.model";
-import {JobEntryModel} from "../../../models/jobEntry.model";
-import {WorkflowFormPartsModel} from "../../../models/workflowFormParts.model";
+import { WorkflowEntryModel } from '../../../models/workflowEntry.model';
+import { JobEntryModel } from '../../../models/jobEntry.model';
+import { WorkflowFormPartsModel } from '../../../models/workflowFormParts.model';
 
 @Component({
   selector: 'app-workflow',
@@ -62,7 +62,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
     details: WorkflowEntryModel[];
     sensor: WorkflowEntryModel[];
     jobs: JobEntryModel[];
-  }
+  };
   workflowFormParts: WorkflowFormPartsModel;
 
   constructor(

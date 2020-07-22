@@ -44,13 +44,13 @@ export interface State {
       detailsData: WorkflowEntryModel[];
       sensorData: WorkflowEntryModel[];
       jobsData: JobEntryModel[];
-    },
+    };
     right: {
       detailsData: WorkflowEntryModel[];
       sensorData: WorkflowEntryModel[];
       jobsData: JobEntryModel[];
-    }
-  }
+    };
+  };
   workflowFormParts: WorkflowFormPartsModel;
 }
 
@@ -82,7 +82,7 @@ const initialState: State = {
       detailsData: [],
       sensorData: [],
       jobsData: [],
-    }
+    },
   },
   workflowFormParts: undefined,
 };
@@ -463,7 +463,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
     case WorkflowsActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON:
       return {
         ...state,
-       loading: true
+        loading: true,
       };
     case WorkflowsActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS:
       return {
@@ -472,8 +472,8 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
         workflowFormParts: action.payload.workflowFormParts,
         historyData: {
           left: action.payload.left,
-          right: action.payload.right
-        }
+          right: action.payload.right,
+        },
       };
     case WorkflowsActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE:
       return {

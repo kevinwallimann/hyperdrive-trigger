@@ -63,9 +63,9 @@ import { PreviousRouteService } from './services/previousRoute/previous-route.se
 import { ToastrModule } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from './components/common/confirmation-dialog/confirmation-dialog.component';
 import { CronQuartzExpressionValidator } from './components/workflows/workflow-form/dynamic-parts/cron-quartz-part/validator/cron-quartz-expression.validator';
-import {WorkflowHistoryComponent} from "./components/workflows/workflow-history/workflow-history.component";
+import { WorkflowHistoryComponent } from './components/workflows/workflow-history/workflow-history.component';
 import { WorkflowComparisonComponent } from './components/workflows/workflow-history/workflow-comparison/workflow-comparison.component';
-import {WorkflowFormComponent} from "./components/workflows/workflow-form/workflow-form.component";
+import { WorkflowFormComponent } from './components/workflows/workflow-form/workflow-form.component';
 import { HistoryDetailComponent } from './components/workflows/workflow-history/workflow-comparison/history-detail/history-detail.component';
 
 @NgModule({

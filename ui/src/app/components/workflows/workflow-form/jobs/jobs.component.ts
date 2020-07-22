@@ -13,16 +13,16 @@
  * limitations under the License.
  */
 
-import {AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subscription } from 'rxjs';
 import cloneDeep from 'lodash/cloneDeep';
 import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
 import { Store } from '@ngrx/store';
-import {FormPart, WorkflowFormPartsModel} from '../../../../models/workflowFormParts.model';
+import { FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
 import { WorkflowAddEmptyJob, WorkflowRemoveJob } from '../../../../stores/workflows/workflows.actions';
 import { JobEntryModel } from '../../../../models/jobEntry.model';
-import {WorkflowEntryModel} from "../../../../models/workflowEntry.model";
+import { WorkflowEntryModel } from '../../../../models/workflowEntry.model';
 
 @Component({
   selector: 'app-jobs',
@@ -39,13 +39,10 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
 
   hiddenJobs: Set<string>;
 
-  workflowSubscription: Subscription;
   jobsUnfoldSubscription: Subscription;
 
   constructor(private store: Store<AppState>) {
     this.hiddenJobs = new Set();
-    this.workflowSubscription = this.store.select(selectWorkflowState).subscribe((state) => {
-    });
   }
 
   ngOnInit(): void {
@@ -93,7 +90,6 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
   }
 
   ngOnDestroy(): void {
-    !!this.workflowSubscription && this.workflowSubscription.unsubscribe();
     !!this.jobsUnfoldSubscription && this.jobsUnfoldSubscription.unsubscribe();
   }
 }

@@ -16,13 +16,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { workflowModes } from '../../../../../models/enums/workflowModes.constants';
-import {DynamicFormPart, FormPart, WorkflowFormPartsModel} from '../../../../../models/workflowFormParts.model';
+import { DynamicFormPart, FormPart, WorkflowFormPartsModel } from '../../../../../models/workflowFormParts.model';
 import { Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../../../stores/app.reducers';
 import { WorkflowJobChanged, WorkflowJobTypeSwitched } from '../../../../../stores/workflows/workflows.actions';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../../models/workflowEntry.model';
 import { delay } from 'rxjs/operators';
-import {JobEntryModel} from "../../../../../models/jobEntry.model";
+import { JobEntryModel } from '../../../../../models/jobEntry.model';
 
 @Component({
   selector: 'app-job',

@@ -15,13 +15,11 @@
 
 package za.co.absa.hyperdrive.trigger.api.rest.services
 
-import java.time.LocalDateTime
-
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import za.co.absa.hyperdrive.trigger.models.errors.ApiError
-import za.co.absa.hyperdrive.trigger.models.{Project, ProjectInfo, Workflow, WorkflowHistory, WorkflowJoined}
+import za.co.absa.hyperdrive.trigger.models.{Project, ProjectInfo, Workflow, WorkflowJoined}
 import za.co.absa.hyperdrive.trigger.persistance.{DagInstanceRepository, WorkflowRepository}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -77,7 +75,8 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
   }
 
   def deleteWorkflow(id: Long)(implicit ec: ExecutionContext): Future[Boolean] = {
-    workflowRepository.deleteWorkflow(id).map(_ => true)
+    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
+    workflowRepository.deleteWorkflow(id, user).map(_ => true)
   }
 
   override def updateWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[Seq[ApiError], WorkflowJoined]] = {
@@ -115,7 +114,8 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
   }
 
   override def switchWorkflowActiveState(id: Long)(implicit ec: ExecutionContext): Future[Boolean] = {
-    workflowRepository.switchWorkflowActiveState(id).map(_ => true)
+    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
+    workflowRepository.switchWorkflowActiveState(id, user).map(_ => true)
   }
 
   override def getProjectNames()(implicit ec: ExecutionContext): Future[Set[String]] = {

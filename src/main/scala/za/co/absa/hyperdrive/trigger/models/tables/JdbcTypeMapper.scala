@@ -15,12 +15,16 @@
 
 package za.co.absa.hyperdrive.trigger.models.tables
 
+import java.io.StringWriter
+
 import za.co.absa.hyperdrive.trigger.models.enums.{DBOperation, DagInstanceStatuses, JobStatuses, JobTypes, SensorTypes}
 import za.co.absa.hyperdrive.trigger.models.enums.SensorTypes.SensorType
 import za.co.absa.hyperdrive.trigger.models.enums.JobStatuses.JobStatus
 import za.co.absa.hyperdrive.trigger.models.enums.JobTypes.JobType
 import play.api.libs.json.{JsValue, Json}
 import slick.jdbc.JdbcType
+import za.co.absa.hyperdrive.trigger.ObjectMapperSingleton
+import za.co.absa.hyperdrive.trigger.models.WorkflowJoined
 import za.co.absa.hyperdrive.trigger.models.enums.DBOperation.DBOperation
 import za.co.absa.hyperdrive.trigger.models.enums.DagInstanceStatuses.DagInstanceStatus
 
@@ -30,6 +34,15 @@ import scala.util.Try
 trait JdbcTypeMapper {
   this: Profile =>
   import profile.api._
+
+  implicit lazy val workflowJoinedMapper: JdbcType[WorkflowJoined] = MappedColumnType.base[WorkflowJoined, String](
+    workflowJoined => {
+      val stringWriter = new StringWriter
+      ObjectMapperSingleton.getObjectMapper.writeValue(stringWriter, workflowJoined)
+      stringWriter.toString
+    },
+    workflowJoinedString => ObjectMapperSingleton.getObjectMapper.readValue(workflowJoinedString, classOf[WorkflowJoined])
+  )
 
   implicit lazy val dbOperationMapper: JdbcType[DBOperation] =
     MappedColumnType.base[DBOperation, String](

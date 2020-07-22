@@ -17,9 +17,6 @@ package za.co.absa.hyperdrive.trigger.persistance
 
 import java.time.LocalDateTime
 
-import org.slf4j.LoggerFactory
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype
 import za.co.absa.hyperdrive.trigger.models.enums.DBOperation.{Create, DBOperation, Delete, Update}
 import za.co.absa.hyperdrive.trigger.models._
@@ -29,12 +26,12 @@ import scala.concurrent.{ExecutionContext, Future}
 trait WorkflowHistoryRepository extends Repository {
   import slick.dbio.DBIO
 
-  def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
-  def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
-  def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
+  private[persistance] def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
+  private[persistance] def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
+  private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
 
-  def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
-  def getWorkflowsForComparison(left: Long, right: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison]
+  def getWorkflowHistory(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
+  def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison]
 }
 
 @stereotype.Repository
@@ -54,21 +51,23 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
     workflowHistoryTable += workflowHistory
   }
 
-  override def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+  override private[persistance] def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
     this.insert(workflow, user, Create)
   }
 
-  override def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+  override private[persistance] def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
     this.insert(workflow, user, Update)
   }
 
-  override def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+  override private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
     this.insert(workflow, user, Delete)
   }
 
-  override def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[History]] = {
+  override def getWorkflowHistory(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]] = {
     db.run(
-      workflowHistoryTable.filter(_.workflowId === id).map(row => (row.id, row.changedOn, row.changedBy, row.operation)).result
+      workflowHistoryTable.filter(_.workflowId === workflowId).map(
+        row => (row.id, row.changedOn, row.changedBy, row.operation)
+      ).result
     ).map(_.map(result => History(
       id = result._1,
       changedOn = result._2,
@@ -77,17 +76,23 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
     )))
   }
 
-  override def getWorkflowsForComparison(leftId: Long, rightId: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison] = {
-    val xxx = db.run(
+  override def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison] = {
+    val queryResult = db.run(
       (for {
-        left <- workflowHistoryTable if left.id === leftId
-        right <- workflowHistoryTable if right.id === rightId
+        leftWorkflowHistory <- workflowHistoryTable if leftWorkflowHistory.id === leftHistoryId
+        rightWorkflowHistory <- workflowHistoryTable if rightWorkflowHistory.id === rightHistoryId
       } yield {
-        (left, right)
-    }).result
+        (leftWorkflowHistory, rightWorkflowHistory)
+      }).result
     )
 
-    xxx.map(zzz=> zzz.headOption.map(qqq => WorkflowsForComparison(qqq._1.workflow, qqq._2.workflow)).getOrElse(throw new Exception(s"History with ${leftId} or ${rightId} does not exist.")))
+    queryResult.map(
+      _.headOption.map{ workflowsForComparisonTouple =>
+        WorkflowsForComparison(workflowsForComparisonTouple._1, workflowsForComparisonTouple._2)
+      }.getOrElse(
+        throw new Exception(s"Workflow history with ${leftHistoryId} or ${rightHistoryId} does not exist.")
+      )
+    )
   }
 
 }

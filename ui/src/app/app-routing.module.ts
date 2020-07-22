@@ -23,8 +23,8 @@ import { LogInGuardService } from './services/guards/logInGuard.service';
 import { routeNames } from './constants/routes.constants';
 import { WorkflowsHomeComponent } from './components/workflows/workflows-home/workflows-home.component';
 import { WorkflowComponent } from './components/workflows/workflow/workflow.component';
-import {WorkflowHistoryComponent} from "./components/workflows/workflow-history/workflow-history.component";
-import {WorkflowComparisonComponent} from "./components/workflows/workflow-history/workflow-comparison/workflow-comparison.component";
+import { WorkflowHistoryComponent } from './components/workflows/workflow-history/workflow-history.component';
+import { WorkflowComparisonComponent } from './components/workflows/workflow-history/workflow-comparison/workflow-comparison.component';
 
 const routes: Routes = [
   { path: routeNames.DEFAULT, redirectTo: routeNames.WORKFLOWS, pathMatch: 'full', canActivate: [AuthGuardService] },

@@ -257,18 +257,21 @@ export class LoadWorkflowsHistForComparison implements Action {
 
 export class LoadWorkflowsHistForComparisonSuccess implements Action {
   readonly type = LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS;
-  constructor(public payload: {
-    workflowFormParts: WorkflowFormPartsModel,
-    left: {
-      detailsData: WorkflowEntryModel[];
-      sensorData: WorkflowEntryModel[];
-      jobsData: JobEntryModel[];
+  constructor(
+    public payload: {
+      workflowFormParts: WorkflowFormPartsModel;
+      left: {
+        detailsData: WorkflowEntryModel[];
+        sensorData: WorkflowEntryModel[];
+        jobsData: JobEntryModel[];
+      };
+      right: {
+        detailsData: WorkflowEntryModel[];
+        sensorData: WorkflowEntryModel[];
+        jobsData: JobEntryModel[];
+      };
     },
-    right: {
-      detailsData: WorkflowEntryModel[];
-      sensorData: WorkflowEntryModel[];
-      jobsData: JobEntryModel[];}
-  }) {}
+  ) {}
 }
 
 export class LoadWorkflowsHistForComparisonFailure implements Action {

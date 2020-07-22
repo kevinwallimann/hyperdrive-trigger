@@ -1,31 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import {Subscription} from "rxjs";
-import {WorkflowHistoryModel} from "../../../models/workflowHistory.model";
-import {Store} from "@ngrx/store";
-import {AppState, selectWorkflowState} from "../../../stores/app.reducers";
-import {ActivatedRoute} from "@angular/router";
-import {LoadWorkflowHistory} from "../../../stores/workflows/workflows.actions";
+import { Subscription } from 'rxjs';
+import { HistoryModel } from '../../../models/historyModel';
+import { Store } from '@ngrx/store';
+import { AppState, selectWorkflowState } from '../../../stores/app.reducers';
+import { ActivatedRoute } from '@angular/router';
+import { LoadWorkflowHistory } from '../../../stores/workflows/workflows.actions';
 import { absoluteRoutes } from 'src/app/constants/routes.constants';
 
 @Component({
   selector: 'app-workflow-history',
   templateUrl: './workflow-history.component.html',
-  styleUrls: ['./workflow-history.component.scss']
+  styleUrls: ['./workflow-history.component.scss'],
 })
 export class WorkflowHistoryComponent implements OnInit {
-
   workflowsSubscription: Subscription = null;
   paramsSubscription: Subscription;
 
   absoluteRoutes = absoluteRoutes;
 
   loading = true;
-  workflowHistory: WorkflowHistoryModel[] = [];
-  selected: WorkflowHistoryModel[] = [];
+  workflowHistory: HistoryModel[] = [];
+  selected: HistoryModel[] = [];
 
   id: number;
   left: number = undefined;
-  right: number= undefined;
+  right: number = undefined;
 
   isSelectable(zzz): boolean {
     const leng = this.selected.length == 2;
@@ -51,5 +50,4 @@ export class WorkflowHistoryComponent implements OnInit {
       this.workflowHistory = state.workflowHistory;
     });
   }
-
 }

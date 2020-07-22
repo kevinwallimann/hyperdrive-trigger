@@ -29,13 +29,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class WorkflowHistoryController @Inject()(workflowHistoryService: WorkflowHistoryService) {
 
   @GetMapping(path = Array("/workflowHistory"))
-  def getWorkflow(@RequestParam id: Long): CompletableFuture[Seq[History]] = {
-    workflowHistoryService.getWorkflowHistory(id).toJava.toCompletableFuture
+  def getWorkflowHistory(@RequestParam workflowId: Long): CompletableFuture[Seq[History]] = {
+    workflowHistoryService.getWorkflowHistory(workflowId).toJava.toCompletableFuture
   }
 
   @GetMapping(path = Array("/workflowsForComparison"))
-  def getWorkflowsForComparison(@RequestParam left: Long, @RequestParam right: Long): CompletableFuture[WorkflowsForComparison] = {
-    workflowHistoryService.getWorkflowsForComparison(left, right).toJava.toCompletableFuture
+  def getWorkflowsForComparison(@RequestParam leftHistoryId: Long, @RequestParam rightHistoryId: Long): CompletableFuture[WorkflowsForComparison] = {
+    workflowHistoryService.getWorkflowsForComparison(leftHistoryId, rightHistoryId).toJava.toCompletableFuture
   }
 
 }

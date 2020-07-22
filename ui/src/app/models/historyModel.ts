@@ -17,49 +17,54 @@ import { SensorModel } from './sensor.model';
 import { DagDefinitionJoinedModel } from './dagDefinitionJoined.model';
 import { WorkflowJoinedModel } from './workflowJoined.model';
 
-export type WorkflowHistoryModel = {
+export type HistoryModel = {
   id: number;
   changedOn: Date;
   changedBy: string;
   operation: OperationType;
-  workflowId: number;
 };
 
 export type OperationType = {
   name: string;
 };
 
-export class WorkflowHistoryModelFactory {
-  static create(
-    id: number,
-    changedOn: Date,
-    changedBy: string,
-    operation: OperationType,
-    workflowId: number,
-  ): WorkflowHistoryModel {
+export class HistoryModelFactory {
+  static create(id: number, changedOn: Date, changedBy: string, operation: OperationType): HistoryModel {
     return {
       id: id,
       changedOn: changedOn,
       changedBy: changedBy,
       operation: operation,
+    };
+  }
+}
+
+export type WorkflowHistoryModel = {
+  history: HistoryModel;
+  workflowId: Number;
+  workflow: WorkflowJoinedModel;
+};
+
+export class WorkflowHistoryModelFactory {
+  static create(history: HistoryModel, workflowId: Number, workflow: WorkflowJoinedModel): WorkflowHistoryModel {
+    return {
+      history: history,
       workflowId: workflowId,
+      workflow: workflow,
     };
   }
 }
 
 export type WorkflowHistForComparisonModel = {
-  left: WorkflowJoinedModel;
-  right: WorkflowJoinedModel;
+  left: WorkflowHistoryModel;
+  right: WorkflowHistoryModel;
 };
 
 export class WorkflowHistForComparisonModelFactory {
-  static create(
-      left: WorkflowJoinedModel,
-      right: WorkflowJoinedModel
-  ): WorkflowHistForComparisonModel {
+  static create(left: WorkflowHistoryModel, right: WorkflowHistoryModel): WorkflowHistForComparisonModel {
     return {
       left: left,
-      right: right
+      right: right,
     };
   }
 }

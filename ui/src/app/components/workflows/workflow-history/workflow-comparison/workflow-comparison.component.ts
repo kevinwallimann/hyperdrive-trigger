@@ -1,18 +1,18 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Subscription} from "rxjs";
-import {Store} from "@ngrx/store";
-import {AppState, selectWorkflowState} from "../../../../stores/app.reducers";
-import {ActivatedRoute} from "@angular/router";
-import {LoadWorkflowsHistForComparison} from "../../../../stores/workflows/workflows.actions";
-import {workflowModes} from "../../../../models/enums/workflowModes.constants";
-import {WorkflowEntryModel} from "../../../../models/workflowEntry.model";
-import {DynamicFormPart, FormPart, WorkflowFormPartsModel} from "../../../../models/workflowFormParts.model";
-import {JobEntryModel} from "../../../../models/jobEntry.model";
+import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
+import { ActivatedRoute } from '@angular/router';
+import { LoadWorkflowsHistForComparison } from '../../../../stores/workflows/workflows.actions';
+import { workflowModes } from '../../../../models/enums/workflowModes.constants';
+import { WorkflowEntryModel } from '../../../../models/workflowEntry.model';
+import { DynamicFormPart, FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
+import { JobEntryModel } from '../../../../models/jobEntry.model';
 
 @Component({
   selector: 'app-workflow-comparison',
   templateUrl: './workflow-comparison.component.html',
-  styleUrls: ['./workflow-comparison.component.scss']
+  styleUrls: ['./workflow-comparison.component.scss'],
 })
 export class WorkflowComparisonComponent implements OnInit {
   workflowsSubscription: Subscription = null;
@@ -24,21 +24,21 @@ export class WorkflowComparisonComponent implements OnInit {
     details: WorkflowEntryModel[];
     sensor: WorkflowEntryModel[];
     jobs: JobEntryModel[];
-  }
+  };
   workflowDataRight: {
     details: WorkflowEntryModel[];
     sensor: WorkflowEntryModel[];
     jobs: JobEntryModel[];
-  }
+  };
   workflowFormParts: WorkflowFormPartsModel;
 
-  loading: boolean = true;
+  loading = true;
 
   constructor(private store: Store<AppState>, route: ActivatedRoute) {
     this.paramsSubscription = route.params.subscribe((parameters) => {
       console.log(parameters);
       // this.id = parameters.id;
-      this.store.dispatch(new LoadWorkflowsHistForComparison( { left: parameters.id2, right: parameters.id3 }));
+      this.store.dispatch(new LoadWorkflowsHistForComparison({ left: parameters.id2, right: parameters.id3 }));
     });
   }
 
@@ -58,5 +58,4 @@ export class WorkflowComparisonComponent implements OnInit {
       this.loading = state.loading;
     });
   }
-
 }
