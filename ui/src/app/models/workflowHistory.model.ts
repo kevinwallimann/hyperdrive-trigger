@@ -18,11 +18,11 @@ import { DagDefinitionJoinedModel } from './dagDefinitionJoined.model';
 import { WorkflowJoinedModel } from './workflowJoined.model';
 
 export type WorkflowHistoryModel = {
+  id: number;
   changedOn: Date;
   changedBy: string;
   operation: OperationType;
   workflowId: number;
-  workflow: WorkflowJoinedModel;
 };
 
 export type OperationType = {
@@ -31,18 +31,35 @@ export type OperationType = {
 
 export class WorkflowHistoryModelFactory {
   static create(
+    id: number,
     changedOn: Date,
     changedBy: string,
     operation: OperationType,
     workflowId: number,
-    workflow: WorkflowJoinedModel,
   ): WorkflowHistoryModel {
     return {
+      id: id,
       changedOn: changedOn,
       changedBy: changedBy,
       operation: operation,
       workflowId: workflowId,
-      workflow: workflow,
+    };
+  }
+}
+
+export type WorkflowHistForComparisonModel = {
+  left: WorkflowJoinedModel;
+  right: WorkflowJoinedModel;
+};
+
+export class WorkflowHistForComparisonModelFactory {
+  static create(
+      left: WorkflowJoinedModel,
+      right: WorkflowJoinedModel
+  ): WorkflowHistForComparisonModel {
+    return {
+      left: left,
+      right: right
     };
   }
 }

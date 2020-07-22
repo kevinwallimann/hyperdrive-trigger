@@ -13,28 +13,31 @@
  * limitations under the License.
  */
 
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subscription } from 'rxjs';
 import cloneDeep from 'lodash/cloneDeep';
 import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
 import { Store } from '@ngrx/store';
-import { FormPart } from '../../../../models/workflowFormParts.model';
+import {FormPart, WorkflowFormPartsModel} from '../../../../models/workflowFormParts.model';
 import { WorkflowAddEmptyJob, WorkflowRemoveJob } from '../../../../stores/workflows/workflows.actions';
 import { JobEntryModel } from '../../../../models/jobEntry.model';
+import {WorkflowEntryModel} from "../../../../models/workflowEntry.model";
 
 @Component({
   selector: 'app-jobs',
   templateUrl: './jobs.component.html',
   styleUrls: ['./jobs.component.scss'],
 })
-export class JobsComponent implements OnDestroy, OnInit {
+export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
   @Input() jobsUnfold: EventEmitter<any>;
+  @Input() mode: string;
+  @Input() workflowFormParts: WorkflowFormPartsModel;
+  @Input() jobsData: JobEntryModel[];
+
   workflowModes = workflowModes;
-  mode: string;
-  jobData: JobEntryModel[];
+
   hiddenJobs: Set<string>;
-  staticJobPart: FormPart;
 
   workflowSubscription: Subscription;
   jobsUnfoldSubscription: Subscription;
@@ -42,14 +45,6 @@ export class JobsComponent implements OnDestroy, OnInit {
   constructor(private store: Store<AppState>) {
     this.hiddenJobs = new Set();
     this.workflowSubscription = this.store.select(selectWorkflowState).subscribe((state) => {
-      this.mode = state.workflowAction.mode;
-      this.jobData = cloneDeep(state.workflowAction.workflowData.jobs).sort((first, second) => first.order - second.order);
-
-      this.staticJobPart = state.workflowFormParts.staticJobPart;
-
-      if (this.jobData.length == 0) {
-        this.store.dispatch(new WorkflowAddEmptyJob(0));
-      }
     });
   }
 
@@ -57,6 +52,12 @@ export class JobsComponent implements OnDestroy, OnInit {
     this.jobsUnfoldSubscription = this.jobsUnfold.subscribe((event) => {
       this.hiddenJobs.clear();
     });
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.jobsData.length == 0) {
+      this.store.dispatch(new WorkflowAddEmptyJob(0));
+    }
   }
 
   trackByFn(index, item: JobEntryModel) {
@@ -76,7 +77,7 @@ export class JobsComponent implements OnDestroy, OnInit {
   }
 
   addJob() {
-    this.store.dispatch(new WorkflowAddEmptyJob(this.jobData.length));
+    this.store.dispatch(new WorkflowAddEmptyJob(this.jobsData.length));
   }
 
   removeJob(jobId: string): void {
@@ -84,10 +85,10 @@ export class JobsComponent implements OnDestroy, OnInit {
   }
 
   getJobName(jobId: string) {
-    const jobDataOption = this.jobData.find((job) => job.jobId === jobId);
+    const jobDataOption = this.jobsData.find((job) => job.jobId === jobId);
     const jobData = !!jobDataOption ? jobDataOption.entries : [];
 
-    const nameOption = jobData.find((value) => value.property === this.staticJobPart.property);
+    const nameOption = jobData.find((value) => value.property === this.workflowFormParts.staticJobPart.property);
     return !!nameOption ? nameOption.value : '';
   }
 

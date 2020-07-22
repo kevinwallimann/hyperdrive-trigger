@@ -19,10 +19,20 @@ import java.time.LocalDateTime
 
 import za.co.absa.hyperdrive.trigger.models.enums.DBOperation.DBOperation
 
-case class WorkflowHistory(
+case class History(
+  id: Long = 0,
   changedOn: LocalDateTime,
   changedBy: String,
-  operation: DBOperation,
+  operation: DBOperation
+)
+
+case class WorkflowHistory(
+  history: History,
   workflowId: Long,
   workflow: WorkflowJoined
+)
+
+case class WorkflowsForComparison(
+  left: WorkflowJoined,
+  right: WorkflowJoined
 )

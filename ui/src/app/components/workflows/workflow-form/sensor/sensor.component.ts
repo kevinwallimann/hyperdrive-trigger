@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
 import { WorkflowSensorChanged, WorkflowSensorTypeSwitched } from '../../../../stores/workflows/workflows.actions';
-import { DynamicFormPart, FormPart } from '../../../../models/workflowFormParts.model';
+import {DynamicFormPart, FormPart, WorkflowFormPartsModel} from '../../../../models/workflowFormParts.model';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../models/workflowEntry.model';
 import { delay } from 'rxjs/operators';
 
@@ -29,33 +29,19 @@ import { delay } from 'rxjs/operators';
   styleUrls: ['./sensor.component.scss'],
 })
 export class SensorComponent implements OnInit, OnDestroy {
+  @Input() mode: string;
+  @Input() workflowFormParts: WorkflowFormPartsModel;
+  @Input() sensorData: WorkflowEntryModel[];
   workflowModes = workflowModes;
-  selectedSensor: string;
-  mode: string;
-  sensorData: WorkflowEntryModel[];
-  sensorDynamicParts: DynamicFormPart[];
-  sensorSwitchPart: FormPart;
 
   sensorChanges: Subject<WorkflowEntryModel> = new Subject<WorkflowEntryModel>();
   sensorChangesSubscription: Subscription;
-  workflowSubscription: Subscription;
 
-  constructor(private store: Store<AppState>) {
-    this.workflowSubscription = this.store.select(selectWorkflowState).subscribe((state) => {
-      this.mode = state.workflowAction.mode;
-
-      this.sensorDynamicParts = state.workflowFormParts.dynamicParts.sensorDynamicParts;
-      this.sensorSwitchPart = state.workflowFormParts.sensorSwitchPart;
-      this.sensorData = state.workflowAction.workflowData.sensor;
-
-      const selected = this.sensorData.find((value) => value.property == this.sensorSwitchPart.property);
-      this.selectedSensor = !!selected ? selected.value : undefined;
-    });
-  }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
     this.sensorChangesSubscription = this.sensorChanges.pipe(delay(0)).subscribe((sensorChange) => {
-      if (sensorChange.property == this.sensorSwitchPart.property) {
+      if (sensorChange.property == this.workflowFormParts.sensorSwitchPart.property) {
         this.store.dispatch(new WorkflowSensorTypeSwitched(WorkflowEntryModelFactory.create(sensorChange.property, sensorChange.value)));
       } else {
         this.store.dispatch(new WorkflowSensorChanged(WorkflowEntryModelFactory.create(sensorChange.property, sensorChange.value)));
@@ -64,12 +50,15 @@ export class SensorComponent implements OnInit, OnDestroy {
   }
 
   getSensorTypes(): string[] {
-    return this.sensorDynamicParts.map((component) => component.name);
+    return this.workflowFormParts.dynamicParts.sensorDynamicParts.map((component) => component.name);
   }
 
   getSelectedSensorComponent(): FormPart[] {
-    const sensorComponent = this.sensorDynamicParts.find((sp) => sp.name == this.selectedSensor);
-    return sensorComponent ? sensorComponent.parts : this.sensorDynamicParts[0].parts;
+    const selected = this.sensorData.find((value) => value.property == this.workflowFormParts.sensorSwitchPart.property);
+    const selectedSensor = !!selected ? selected.value : undefined;
+
+    const sensorComponent = this.workflowFormParts.dynamicParts.sensorDynamicParts.find((sp) => sp.name == selectedSensor);
+    return sensorComponent ? sensorComponent.parts : this.workflowFormParts.dynamicParts.sensorDynamicParts[0].parts;
   }
 
   getValue(prop: string) {
@@ -79,6 +68,5 @@ export class SensorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     !!this.sensorChangesSubscription && this.sensorChangesSubscription.unsubscribe();
-    !!this.workflowSubscription && this.workflowSubscription.unsubscribe();
   }
 }

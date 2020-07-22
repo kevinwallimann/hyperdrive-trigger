@@ -13,9 +13,19 @@
   ~ limitations under the License.
   -->
 
+<app-select-part
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [name]="workflowFormParts.sensorSwitchPart.name"
+  [value]="getValue(workflowFormParts.sensorSwitchPart.property)"
+  [options]="getSensorTypes()"
+  [valueChanges]="sensorChanges"
+  [property]="workflowFormParts.sensorSwitchPart.property"
+  [partValidation]="workflowFormParts.sensorSwitchPart.partValidation">
+</app-select-part>
+
 <app-dynamic-parts
-  [isShow]="mode == workflowModes.SHOW"
-  [formParts]="parts"
-  [valueChanges]="detailsChanges"
-  [values]="data">
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [formParts]="getSelectedSensorComponent()"
+  [valueChanges]="sensorChanges"
+  [values]="sensorData">
 </app-dynamic-parts>

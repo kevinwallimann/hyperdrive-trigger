@@ -15,6 +15,7 @@
 CREATE TYPE operation AS ENUM ('Create', 'Update', 'Delete');
 
 create table "workflow_history" (
+  "id" BIGSERIAL NOT NULL PRIMARY KEY,
   "changed_on" TIMESTAMP NOT NULL,
   "changed_by" VARCHAR NOT NULL,
   "operation" VARCHAR NOT NULL,

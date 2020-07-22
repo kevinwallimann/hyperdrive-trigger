@@ -33,7 +33,8 @@ trait WorkflowHistoryRepository extends Repository {
   def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
   def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
 
-  def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[WorkflowHistory]]
+  def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
+  def getWorkflowsForComparison(left: Long, right: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison]
 }
 
 @stereotype.Repository
@@ -42,9 +43,11 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
 
   private def insert(workflow: WorkflowJoined, user: String, operation: DBOperation)(implicit ec: ExecutionContext): DBIO[Int] = {
     val workflowHistory = WorkflowHistory(
-      changedOn = LocalDateTime.now(),
-      changedBy = user,
-      operation = operation,
+      history = History(
+        changedOn = LocalDateTime.now(),
+        changedBy = user,
+        operation = operation
+      ),
       workflowId = workflow.id,
       workflow = workflow
     )
@@ -63,9 +66,28 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
     this.insert(workflow, user, Delete)
   }
 
-  override def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[WorkflowHistory]] = {
+  override def getWorkflowHistory(id: Long)(implicit ec: ExecutionContext): Future[Seq[History]] = {
     db.run(
-      workflowHistoryTable.filter(_.workflowId === id).sortBy(_.changedOn).result
-    )
+      workflowHistoryTable.filter(_.workflowId === id).map(row => (row.id, row.changedOn, row.changedBy, row.operation)).result
+    ).map(_.map(result => History(
+      id = result._1,
+      changedOn = result._2,
+      changedBy = result._3,
+      operation = result._4
+    )))
   }
+
+  override def getWorkflowsForComparison(leftId: Long, rightId: Long)(implicit ec: ExecutionContext): Future[WorkflowsForComparison] = {
+    val xxx = db.run(
+      (for {
+        left <- workflowHistoryTable if left.id === leftId
+        right <- workflowHistoryTable if right.id === rightId
+      } yield {
+        (left, right)
+    }).result
+    )
+
+    xxx.map(zzz=> zzz.headOption.map(qqq => WorkflowsForComparison(qqq._1.workflow, qqq._2.workflow)).getOrElse(throw new Exception(s"History with ${leftId} or ${rightId} does not exist.")))
+  }
+
 }

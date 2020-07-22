@@ -23,7 +23,7 @@ export const routeNames = {
   WORKFLOW_ACTION: ':mode',
   WORKFLOW_ACTION_WITH_ID: ':mode/:id',
   WORKFLOW_HISTORY_LIST: 'show/:id/history',
-  WORKFLOW_HISTORY: ':id',
+  WORKFLOW_HISTORY: 'workflows/show/:id1/history/:id2/compareWith/:id3',
   RUNS: 'runs',
 };
 
@@ -39,5 +39,8 @@ export const absoluteRoutes = {
   RUNS: `/${routeNames.RUNS}`,
   WORKFLOW_HISTORY_LIST(id: number): string {
     return `/${routeNames.WORKFLOWS}/${workflowModes.SHOW}/${id}/history`;
+  },
+  WORKFLOW_HISTORY(workflowId: number, historyIdFirst: number, historyIdSecond: number): string {
+    return `/${routeNames.WORKFLOWS}/${workflowModes.SHOW}/${workflowId}/history/${historyIdFirst}/compareWith/${historyIdSecond}`;
   },
 };

@@ -29,6 +29,6 @@ export const api = {
   CREATE_WORKFLOW: '/workflow',
   UPDATE_WORKFLOW: '/workflows',
   GET_WORKFLOW_HISTORY: '/workflowHistory',
-
+  GET_WORKFLOW_HIST_FOR_COMPARISON: '/workflowsForComparison',
   GET_QUARTZ_DETAIL: '/util/quartzDetail',
 };

@@ -16,12 +16,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { workflowModes } from '../../../../../models/enums/workflowModes.constants';
-import { DynamicFormPart, FormPart } from '../../../../../models/workflowFormParts.model';
+import {DynamicFormPart, FormPart, WorkflowFormPartsModel} from '../../../../../models/workflowFormParts.model';
 import { Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../../../stores/app.reducers';
 import { WorkflowJobChanged, WorkflowJobTypeSwitched } from '../../../../../stores/workflows/workflows.actions';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../../models/workflowEntry.model';
 import { delay } from 'rxjs/operators';
+import {JobEntryModel} from "../../../../../models/jobEntry.model";
 
 @Component({
   selector: 'app-job',
@@ -30,37 +31,20 @@ import { delay } from 'rxjs/operators';
 })
 export class JobComponent implements OnInit, OnDestroy {
   @Input() jobId: string;
+  @Input() mode: string;
+  @Input() workflowFormParts: WorkflowFormPartsModel;
+  @Input() jobsData: JobEntryModel[];
+
   workflowModes = workflowModes;
-  selectedJob: string;
-  mode: string;
-  jobData: WorkflowEntryModel[];
-  jobDynamicParts: DynamicFormPart[];
-  jobSwitchPart: FormPart;
-  staticJobPart: FormPart;
 
   jobChanges: Subject<WorkflowEntryModel> = new Subject<WorkflowEntryModel>();
   jobChangesSubscription: Subscription;
-  workflowSubscription: Subscription;
 
   constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    this.workflowSubscription = this.store.select(selectWorkflowState).subscribe((state) => {
-      this.mode = state.workflowAction.mode;
-
-      this.jobDynamicParts = state.workflowFormParts.dynamicParts.jobDynamicParts;
-      this.jobSwitchPart = state.workflowFormParts.jobSwitchPart;
-      this.staticJobPart = state.workflowFormParts.staticJobPart;
-
-      const jobDataOption = state.workflowAction.workflowData.jobs.find((job) => job.jobId == this.jobId);
-      this.jobData = !!jobDataOption ? jobDataOption.entries : [];
-
-      const selected = this.jobData.find((value) => value.property == this.jobSwitchPart.property);
-      this.selectedJob = !!selected ? selected.value : undefined;
-    });
-
     this.jobChangesSubscription = this.jobChanges.pipe(delay(0)).subscribe((jobChange) => {
-      if (jobChange.property == this.jobSwitchPart.property) {
+      if (jobChange.property == this.workflowFormParts.jobSwitchPart.property) {
         this.store.dispatch(
           new WorkflowJobTypeSwitched({
             jobId: this.jobId,
@@ -76,21 +60,31 @@ export class JobComponent implements OnInit, OnDestroy {
   }
 
   getJobTypes(): string[] {
-    return this.jobDynamicParts.map((part) => part.name);
+    return this.workflowFormParts.dynamicParts.jobDynamicParts.map((part) => part.name);
   }
 
   getSelectedJobComponent(): FormPart[] {
-    const jobDynamicPart = this.jobDynamicParts.find((jdp) => jdp.name == this.selectedJob);
-    return jobDynamicPart ? jobDynamicPart.parts : this.jobDynamicParts[0].parts;
+    const jobDynamicPart = this.workflowFormParts.dynamicParts.jobDynamicParts.find((jdp) => jdp.name == this.getSelectedJob());
+    return jobDynamicPart ? jobDynamicPart.parts : this.workflowFormParts.dynamicParts.jobDynamicParts[0].parts;
+  }
+
+  getJobData(): WorkflowEntryModel[] {
+    const jobDataOption = this.jobsData.find((job) => job.jobId == this.jobId);
+    return !!jobDataOption ? jobDataOption.entries : [];
+  }
+
+  getSelectedJob() {
+    const selected = this.getJobData().find((value) => value.property == this.workflowFormParts.jobSwitchPart.property);
+    return !!selected ? selected.value : undefined;
   }
 
   getValue(prop: string) {
-    const val = this.jobData.find((value) => value.property == prop);
+    const val = this.getJobData().find((value) => value.property == prop);
     return !!val ? val.value : undefined;
   }
 
   ngOnDestroy(): void {
     !!this.jobChangesSubscription && this.jobChangesSubscription.unsubscribe();
-    !!this.workflowSubscription && this.workflowSubscription.unsubscribe();
+    // !!this.workflowSubscription && this.workflowSubscription.unsubscribe();
   }
 }

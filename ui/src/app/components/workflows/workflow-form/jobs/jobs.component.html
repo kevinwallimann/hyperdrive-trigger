@@ -13,27 +13,30 @@
   ~ limitations under the License.
   -->
 
-<button type="button" class="btn btn-sm btn-secondary" *ngIf="mode != workflowModes.SHOW" (click)="addJob()">
+<button type="button" class="btn btn-sm btn-secondary" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMP" (click)="addJob()">
   <clr-icon shape="plus"></clr-icon>
   Add job
 </button>
 
-<div class="card" *ngFor="let job of this.jobData; let index = index; trackBy: trackByFn;">
+<div class="card" *ngFor="let job of this.jobsData; let index = index; trackBy: trackByFn;">
   <div class="card-block">
     <div class="card-title notSelectable" style="word-wrap: break-word;" (click)="toggleJob(job.jobId)">
       <clr-icon shape="angle" [dir]="isJobHidden(job.jobId)?'right':'down'"></clr-icon>
       {{getJobName(job.jobId)}}
-      <button type="button" class="btn btn-link" *ngIf="mode != workflowModes.SHOW">
+      <button type="button" class="btn btn-link" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMP">
         <clr-icon shape="drag-handle"></clr-icon>
       </button>
-      <button type="button" style="float: right;" class="btn btn-link" *ngIf="mode != workflowModes.SHOW"
+      <button type="button" style="float: right;" class="btn btn-link" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMP"
               (click)="removeJob(job.jobId)">
         <clr-icon shape="trash" class="is-error"></clr-icon>
       </button>
     </div>
     <div class="accordion-content" [hidden]="isJobHidden(job.jobId)">
       <app-job
-        [jobId]="job.jobId">
+        [jobId]="job.jobId"
+        [mode]="mode"
+        [jobsData]="jobsData"
+        [workflowFormParts]="workflowFormParts">
       </app-job>
     </div>
   </div>

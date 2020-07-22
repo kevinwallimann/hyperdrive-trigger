@@ -67,6 +67,10 @@ export const LOAD_WORKFLOW_HISTORY = 'LOAD_WORKFLOW_HISTORY';
 export const LOAD_WORKFLOW_HISTORY_SUCCESS = 'LOAD_WORKFLOW_HISTORY_SUCCESS';
 export const LOAD_WORKFLOW_HISTORY_FAILURE = 'LOAD_WORKFLOW_HISTORY_FAILURE';
 
+export const LOAD_WORKFLOWS_HIST_FOR_COMPARISON = 'LOAD_WORKFLOWS_HIST_FOR_COMPARISON';
+export const LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS = 'LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS';
+export const LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE = 'LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE';
+
 export class InitializeWorkflows implements Action {
   readonly type = INITIALIZE_WORKFLOWS;
 }
@@ -233,6 +237,31 @@ export class LoadWorkflowHistorySuccess implements Action {
   constructor(public payload: any[]) {}
 }
 
+export class LoadWorkflowsHistForComparison implements Action {
+  readonly type = LOAD_WORKFLOWS_HIST_FOR_COMPARISON;
+  constructor(public payload: { left: number; right: number }) {}
+}
+
+export class LoadWorkflowsHistForComparisonSuccess implements Action {
+  readonly type = LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS;
+  constructor(public payload: {
+    workflowFormParts: WorkflowFormPartsModel,
+    left: {
+      detailsData: WorkflowEntryModel[];
+      sensorData: WorkflowEntryModel[];
+      jobsData: JobEntryModel[];
+    },
+    right: {
+      detailsData: WorkflowEntryModel[];
+      sensorData: WorkflowEntryModel[];
+      jobsData: JobEntryModel[];}
+  }) {}
+}
+
+export class LoadWorkflowsHistForComparisonFailure implements Action {
+  readonly type = LOAD_WORKFLOWS_HIST_FOR_COMPARISON_FAILURE;
+}
+
 export type WorkflowsActions =
   | InitializeWorkflows
   | InitializeWorkflowsSuccess
@@ -267,4 +296,7 @@ export type WorkflowsActions =
   | UpdateWorkflowFailure
   | RemoveBackendValidationError
   | LoadWorkflowHistory
-  | LoadWorkflowHistorySuccess;
+  | LoadWorkflowHistorySuccess
+  | LoadWorkflowsHistForComparison
+  | LoadWorkflowsHistForComparisonSuccess
+  | LoadWorkflowsHistForComparisonFailure;

@@ -29,7 +29,7 @@ import za.co.absa.hyperdrive.trigger.models.enums.JobStatuses.JobStatus
 import za.co.absa.hyperdrive.trigger.models.enums.JobTypes.JobType
 import za.co.absa.hyperdrive.trigger.models.enums.{JobStatuses, JobTypes, SensorTypes}
 import za.co.absa.hyperdrive.trigger.models.enums.SensorTypes.SensorType
-import za.co.absa.hyperdrive.trigger.models.{Workflow, WorkflowHistory, WorkflowJoined}
+import za.co.absa.hyperdrive.trigger.models.{History, Workflow, WorkflowHistory, WorkflowJoined}
 
 trait WorkflowHistoryTable {
   this: Profile with JdbcTypeMapper =>
@@ -82,22 +82,33 @@ trait WorkflowHistoryTable {
       column => objectMapper.readValue(column, classOf[WorkflowJoined])
     )
 
+    def id: Rep[Long] = column[Long]("id", O.PrimaryKey, O.AutoInc, O.SqlType("BIGSERIAL"))
     def changedOn: Rep[LocalDateTime] = column[LocalDateTime]("changed_on")
     def changedBy: Rep[String] = column[String]("changed_by")
     def operation: Rep[DBOperation] = column[DBOperation]("operation")
     def workflowId: Rep[Long] = column[Long]("workflow_id")
     def workflow: Rep[WorkflowJoined] = column[WorkflowJoined]("workflow")
 
-    def * : ProvenShape[WorkflowHistory] = (changedOn, changedBy, operation, workflowId, workflow) <> (
+    def * : ProvenShape[WorkflowHistory] = (id, changedOn, changedBy, operation, workflowId, workflow) <> (
       workflowTuple =>
         WorkflowHistory.apply(
-          changedOn = workflowTuple._1,
-          changedBy = workflowTuple._2,
-          operation = workflowTuple._3,
-          workflowId = workflowTuple._4,
-          workflow = workflowTuple._5
+          history = History.apply(
+            id = workflowTuple._1,
+            changedOn = workflowTuple._2,
+            changedBy = workflowTuple._3,
+            operation = workflowTuple._4
+          ),
+          workflowId = workflowTuple._5,
+          workflow = workflowTuple._6
         ),
-      WorkflowHistory.unapply
+      (x: WorkflowHistory) => Option((
+        x.history.id,
+        x.history.changedOn,
+        x.history.changedBy,
+        x.history.operation,
+        x.workflowId,
+        x.workflow
+        ))
     )
   }
 

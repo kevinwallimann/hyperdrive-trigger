@@ -14,25 +14,25 @@
   -->
 
 <app-dynamic-parts
-  [isShow]="mode == workflowModes.SHOW"
-  [formParts]="[staticJobPart]"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [formParts]="[workflowFormParts.staticJobPart]"
   [valueChanges]="jobChanges"
-  [values]="jobData">
+  [values]="getJobData()">
 </app-dynamic-parts>
 
 <app-select-part
-  [isShow]="mode == workflowModes.SHOW"
-  [name]="jobSwitchPart.name"
-  [value]="getValue(jobSwitchPart.property)"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [name]="workflowFormParts.jobSwitchPart.name"
+  [value]="getValue(workflowFormParts.jobSwitchPart.property)"
   [options]="getJobTypes()"
   [valueChanges]="jobChanges"
-  [property]="jobSwitchPart.property"
-  [partValidation]="jobSwitchPart.partValidation">
+  [property]="workflowFormParts.jobSwitchPart.property"
+  [partValidation]="workflowFormParts.jobSwitchPart.partValidation">
 </app-select-part>
 
 <app-dynamic-parts
-  [isShow]="mode == workflowModes.SHOW"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
   [formParts]="getSelectedJobComponent()"
   [valueChanges]="jobChanges"
-  [values]="jobData">
+  [values]="getJobData()">
 </app-dynamic-parts>

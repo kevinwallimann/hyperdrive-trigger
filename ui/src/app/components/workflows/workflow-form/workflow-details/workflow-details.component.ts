@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
 import { delay, distinctUntilChanged } from 'rxjs/operators';
@@ -29,22 +29,16 @@ import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../model
   styleUrls: ['./workflow-details.component.scss'],
 })
 export class WorkflowDetailsComponent implements OnInit, OnDestroy {
+  @Input() mode: string;
+  @Input() parts: FormPart[];
+  @Input() data: WorkflowEntryModel[];
+
   workflowModes = workflowModes;
-  mode: string;
-  parts: FormPart[];
-  data: WorkflowEntryModel[];
 
   detailsChanges: Subject<WorkflowEntryModel> = new Subject<WorkflowEntryModel>();
   detailsChangesSubscription: Subscription;
-  workflowSubscription: Subscription;
 
-  constructor(private store: Store<AppState>) {
-    this.workflowSubscription = this.store.select(selectWorkflowState).subscribe((state) => {
-      this.mode = state.workflowAction.mode;
-      this.data = state.workflowAction.workflowData.details;
-      this.parts = state.workflowFormParts.detailsParts;
-    });
-  }
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
     this.detailsChangesSubscription = this.detailsChanges.pipe(distinctUntilChanged(), delay(0)).subscribe((newValue) => {
@@ -59,6 +53,5 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     !!this.detailsChangesSubscription && this.detailsChangesSubscription.unsubscribe();
-    !!this.workflowSubscription && this.workflowSubscription.unsubscribe();
   }
 }
