@@ -13,12 +13,8 @@
  * limitations under the License.
  */
 
-package za.co.absa.hyperdrive.trigger.models
-
-import scala.collection.immutable.SortedMap
-
-case class JobParameters(
-  variables: Map[String, String],
-  maps: Map[String, List[String]] = Map.empty[String, List[String]],
-  keyValuePairs: Map[String, SortedMap[String, String]] = Map.empty
-)
+export const workflowsHomeColumns = {
+  WORKFLOW_NAME: 'name',
+  PROJECT_NAME: 'project',
+  IS_ACTIVE: 'isActive',
+};
