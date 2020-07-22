@@ -1,0 +1,32 @@
+<div class="loading" *ngIf="loading">
+    <span class="spinner spinner-inverse">
+        Loading...
+    </span>
+</div>
+
+<div class="content-area asd" *ngIf="!loading">
+  <div class="clr-row">
+    <div class="clr-col">
+      <app-history-detail></app-history-detail>
+      <app-workflow-form
+        [mode]="workflowModes.COMP"
+        [workflowFormParts]="workflowFormParts"
+        [workflowData]="workflowDataLeft"
+        [backendValidationErrors]="[]"
+        [id]="0">
+      </app-workflow-form>
+
+    </div>
+    <div class="clr-col">
+      <app-history-detail></app-history-detail>
+      <app-workflow-form
+        [mode]="workflowModes.COMP"
+        [workflowFormParts]="workflowFormParts"
+        [workflowData]="workflowDataRight"
+        [backendValidationErrors]="[]"
+        [id]="0">
+      </app-workflow-form>
+
+    </div>
+  </div>
+</div>

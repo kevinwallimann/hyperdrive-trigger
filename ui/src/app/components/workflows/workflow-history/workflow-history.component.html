@@ -1,0 +1,32 @@
+<div class="loading" *ngIf="loading">
+    <span class="spinner spinner-inverse">
+        Loading...
+    </span>
+</div>
+
+<div *ngIf="!loading">
+
+  <clr-dg-action-bar>
+    <div class="btn-group">
+      <button [disabled]="selected.length != 2" type="button" class="btn btn-sm btn-secondary" [routerLink]="[absoluteRoutes.WORKFLOW_HISTORY(id, selected[0]?.id, selected[1]?.id)]">
+        <clr-icon shape="two-way-arrows"></clr-icon>
+        Compare workflows
+      </button>
+    </div>
+  </clr-dg-action-bar>
+
+  <clr-datagrid [(clrDgSelected)]="selected"   (clrDgSelectedChange)="selectionChanged($event)">
+    <clr-dg-column>Operation</clr-dg-column>
+    <clr-dg-column>Change By</clr-dg-column>
+    <clr-dg-column>Changed on</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let user of workflowHistory" [clrDgItem]="user" [clrDgSelectable]="isSelectable(user)">
+      <clr-dg-cell>{{user.operation.name}}</clr-dg-cell>
+      <clr-dg-cell>{{user.changedBy}}</clr-dg-cell>
+      <clr-dg-cell>{{user.changedOn | date:'medium'}}</clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>{{workflowHistory.length}} users</clr-dg-footer>
+  </clr-datagrid>
+
+</div>

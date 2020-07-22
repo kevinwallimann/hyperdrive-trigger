@@ -1,0 +1,73 @@
+<form clrForm #workflowForm="ngForm" novalidate>
+
+  <div class="clr-row">
+    <div class="clr-col">
+      <div class="card">
+        <div class="card-block">
+          <div class="card-title notSelectable" (click)="toggleHistoryDetailAccordion()">
+            <clr-icon shape="angle" [dir]="isHistoryDetailHidden?'right':'down'"></clr-icon>
+            History info
+          </div>
+          <div [hidden]="isHistoryDetailHidden" class="accordion-content">
+            <app-string-part
+              [isShow]="true"
+              [name]="'Operation'"
+              [valueChanges]="detailsChanges"
+              [value]="'Create'"
+                [property]="'prop'"
+              [partValidation]="partValidation">
+            </app-string-part>
+
+            <app-string-part
+              [isShow]="true"
+              [name]="'Change By'"
+              [valueChanges]="detailsChanges"
+              [value]="'Jozef'"
+              [property]="'prop'"
+              [partValidation]="partValidation">
+            </app-string-part>
+
+            <app-string-part
+              [isShow]="true"
+              [name]="'Changed on'"
+              [valueChanges]="detailsChanges"
+              [value]="'16-21-2020'"
+              [property]="'prop'"
+              [partValidation]="partValidation">
+            </app-string-part>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!--      <div class="clr-row">-->
+<!--        <div class="clr-col">-->
+<!--          <div class="card">-->
+<!--            <div class="card-block">-->
+<!--              <div class="card-title notSelectable" (click)="toggleRightInfoAccordion()">-->
+<!--                <clr-icon shape="angle" [dir]="isRightInfoHidden?'right':'down'"></clr-icon>-->
+<!--                History info-->
+<!--              </div>-->
+<!--              <div [hidden]="isRightInfoHidden" class="accordion-content">-->
+<!--                <form clrForm #workflowForm="ngForm" novalidate>-->
+<!--                  <app-string-part-->
+<!--                  [isShow]="true"-->
+<!--                  [name]="'Project name'"-->
+<!--                  [valueChanges]="undefined"-->
+<!--                  [value]="'aaa1'"-->
+<!--                  [property]="undefined"-->
+<!--                  [partValidation]="undefined">-->
+<!--                </app-string-part>-->
+<!--                </form>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--                    <b>Workflow name: </b>{{detail.workflowName}}<br/>-->
+<!--                    <b>Project name: </b>{{detail.projectName}}<br/>-->
+<!--                    <b>Started: </b>{{detail.started | date:'medium'}}<br/>-->
+

@@ -1,0 +1,32 @@
+//:host {
+//  display: flex;
+//  background-color: #7ec699;
+//}
+////
+//:host, .content-container {
+//  background-color: #7ec699;
+//  display: flex;
+//  //height: 100%;
+//  width: 100%;
+//}
+////
+//.asd {
+//  background-color: #7ec699;
+//
+//  //height: 100%;
+//  width: 100%;
+//}
+:host {
+  display: flex;
+}
+
+:host, .content-area {
+  height: 100%;
+  width: 100%;
+}
+
+.loading {
+  position: fixed;
+  top: 50%;
+  right: 50%;
+}
