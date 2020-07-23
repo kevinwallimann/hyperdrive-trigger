@@ -8,7 +8,7 @@
 
   <clr-dg-action-bar>
     <div class="btn-group">
-      <button [disabled]="selected.length != 2" type="button" class="btn btn-sm btn-secondary" [routerLink]="[absoluteRoutes.WORKFLOW_HISTORY(id, selected[0]?.id, selected[1]?.id)]">
+      <button [disabled]="selected.length != 2" type="button" class="btn btn-sm btn-secondary" [routerLink]="[absoluteRoutes.WORKFLOW_HISTORY_COMPARISON(id, selected[0]?.id, selected[1]?.id)]">
         <clr-icon shape="two-way-arrows"></clr-icon>
         Compare workflows
       </button>

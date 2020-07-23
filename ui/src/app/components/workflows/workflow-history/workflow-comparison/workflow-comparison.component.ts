@@ -38,7 +38,7 @@ export class WorkflowComparisonComponent implements OnInit {
     this.paramsSubscription = route.params.subscribe((parameters) => {
       console.log(parameters);
       // this.id = parameters.id;
-      this.store.dispatch(new LoadWorkflowsHistForComparison({ left: parameters.id2, right: parameters.id3 }));
+      this.store.dispatch(new LoadWorkflowsHistForComparison({ left: parameters.historyIdLeft, right: parameters.historyIdRight }));
     });
   }
 

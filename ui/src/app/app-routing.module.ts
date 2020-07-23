@@ -35,12 +35,12 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     children: [
       { path: routeNames.WORKFLOWS_HOME, component: WorkflowsHomeComponent, pathMatch: 'full' },
-      { path: routeNames.WORKFLOW_HISTORY_LIST, component: WorkflowHistoryComponent },
       { path: routeNames.WORKFLOW_ACTION, component: WorkflowComponent },
       { path: routeNames.WORKFLOW_ACTION_WITH_ID, component: WorkflowComponent },
+      { path: routeNames.WORKFLOW_HISTORY, component: WorkflowHistoryComponent },
     ],
   },
-  { path: routeNames.WORKFLOW_HISTORY, component: WorkflowComparisonComponent, canActivate: [AuthGuardService] },
+  { path: routeNames.WORKFLOW_HISTORY_COMPARISON, component: WorkflowComparisonComponent, canActivate: [AuthGuardService] },
   { path: routeNames.RUNS, component: RunsComponent, canActivate: [AuthGuardService] },
 ];
 

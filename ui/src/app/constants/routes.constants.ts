@@ -22,8 +22,8 @@ export const routeNames = {
   WORKFLOWS_HOME: '',
   WORKFLOW_ACTION: ':mode',
   WORKFLOW_ACTION_WITH_ID: ':mode/:id',
-  WORKFLOW_HISTORY_LIST: 'show/:id/history',
-  WORKFLOW_HISTORY: 'workflows/show/:id1/history/:id2/compareWith/:id3',
+  WORKFLOW_HISTORY: 'show/:id/history',
+  WORKFLOW_HISTORY_COMPARISON: 'workflows/show/:id/history/:historyIdLeft/compareWith/:historyIdRight',
   RUNS: 'runs',
 };
 
@@ -37,10 +37,10 @@ export const absoluteRoutes = {
   EDIT_WORKFLOW: `/${routeNames.WORKFLOWS}/${workflowModes.EDIT}`,
   COPY_WORKFLOW: `/${routeNames.WORKFLOWS}/${workflowModes.COPY}`,
   RUNS: `/${routeNames.RUNS}`,
-  WORKFLOW_HISTORY_LIST(id: number): string {
+  WORKFLOW_HISTORY(id: number): string {
     return `/${routeNames.WORKFLOWS}/${workflowModes.SHOW}/${id}/history`;
   },
-  WORKFLOW_HISTORY(workflowId: number, historyIdFirst: number, historyIdSecond: number): string {
+  WORKFLOW_HISTORY_COMPARISON(workflowId: number, historyIdFirst: number, historyIdSecond: number): string {
     return `/${routeNames.WORKFLOWS}/${workflowModes.SHOW}/${workflowId}/history/${historyIdFirst}/compareWith/${historyIdSecond}`;
   },
 };
