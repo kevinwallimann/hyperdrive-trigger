@@ -234,9 +234,9 @@ export class WorkflowsEffects {
     withLatestFrom(this.store.select(selectWorkflowState)),
     switchMap(([action, state]: [WorkflowActions.CreateWorkflow, fromWorkflows.State]) => {
       const workflowCreateRequest = new WorkflowRequestModel(
-        state.workflowAction.workflowData.details,
-        state.workflowAction.workflowData.sensor,
-        state.workflowAction.workflowData.jobs,
+        state.workflowAction.workflowFormData.details,
+        state.workflowAction.workflowFormData.sensor,
+        state.workflowAction.workflowFormData.jobs,
       ).getCreateWorkflowRequestObject();
 
       return this.workflowService.createWorkflow(workflowCreateRequest).pipe(
@@ -287,9 +287,9 @@ export class WorkflowsEffects {
     withLatestFrom(this.store.select(selectWorkflowState)),
     switchMap(([action, state]: [WorkflowActions.CreateWorkflow, fromWorkflows.State]) => {
       const workflowUpdateRequest = new WorkflowRequestModel(
-        state.workflowAction.workflowData.details,
-        state.workflowAction.workflowData.sensor,
-        state.workflowAction.workflowData.jobs,
+        state.workflowAction.workflowFormData.details,
+        state.workflowAction.workflowFormData.sensor,
+        state.workflowAction.workflowFormData.jobs,
       ).getUpdateWorkflowRequestObject(state.workflowAction.id);
 
       return this.workflowService.updateWorkflow(workflowUpdateRequest).pipe(

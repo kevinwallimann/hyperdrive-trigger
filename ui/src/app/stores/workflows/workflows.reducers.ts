@@ -30,7 +30,7 @@ export interface State {
     loading: boolean;
     workflow: WorkflowJoinedModel;
     backendValidationErrors: string[];
-    workflowData: {
+    workflowFormData: {
       details: WorkflowEntryModel[];
       sensor: WorkflowEntryModel[];
       jobs: JobEntryModel[];
@@ -63,7 +63,7 @@ const initialState: State = {
     loading: true,
     workflow: undefined,
     backendValidationErrors: [],
-    workflowData: {
+    workflowFormData: {
       details: [],
       sensor: [],
       jobs: [],
@@ -137,8 +137,8 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
           ...state.workflowAction,
           workflow: action.payload.workflow,
           loading: false,
-          workflowData: {
-            ...state.workflowAction.workflowData,
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
             details: action.payload.detailsData,
             sensor: action.payload.sensorData,
             jobs: action.payload.jobsData,
@@ -163,30 +163,30 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
       };
     case WorkflowsActions.WORKFLOW_DETAILS_CHANGED:
       const detailsData = [
-        ...state.workflowAction.workflowData.details.filter((item) => item.property !== action.payload.property),
+        ...state.workflowAction.workflowFormData.details.filter((item) => item.property !== action.payload.property),
         action.payload,
       ];
       return {
         ...state,
         workflowAction: {
           ...state.workflowAction,
-          workflowData: {
-            ...state.workflowAction.workflowData,
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
             details: [...detailsData],
           },
         },
       };
     case WorkflowsActions.WORKFLOW_SENSOR_CHANGED:
       const sensorData = [
-        ...state.workflowAction.workflowData.sensor.filter((item) => item.property !== action.payload.property),
+        ...state.workflowAction.workflowFormData.sensor.filter((item) => item.property !== action.payload.property),
         action.payload,
       ];
       return {
         ...state,
         workflowAction: {
           ...state.workflowAction,
-          workflowData: {
-            ...state.workflowAction.workflowData,
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
             sensor: [...sensorData],
           },
         },
@@ -196,73 +196,73 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
         ...state,
         workflowAction: {
           ...state.workflowAction,
-          workflowData: {
-            ...state.workflowAction.workflowData,
-            sensor: [...initialState.workflowAction.workflowData.sensor, action.payload],
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
+            sensor: [...initialState.workflowAction.workflowFormData.sensor, action.payload],
           },
         },
       };
     case WorkflowsActions.WORKFLOW_ADD_EMPTY_JOB:
       const emptyJobData = JobEntryModelFactory.createWithUuid(action.payload, []);
-      const jobs = [...state.workflowAction.workflowData.jobs, emptyJobData];
+      const jobs = [...state.workflowAction.workflowFormData.jobs, emptyJobData];
       return {
         ...state,
         workflowAction: {
           ...state.workflowAction,
-          workflowData: {
-            ...state.workflowAction.workflowData,
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
             jobs: [...jobs],
           },
         },
       };
     case WorkflowsActions.WORKFLOW_REMOVE_JOB: {
       const jobId: string = action.payload;
-      const jobsAfterRemoval = removeJob(jobId, state.workflowAction.workflowData.jobs);
+      const jobsAfterRemoval = removeJob(jobId, state.workflowAction.workflowFormData.jobs);
       return {
         ...state,
         workflowAction: {
           ...state.workflowAction,
-          workflowData: {
-            ...state.workflowAction.workflowData,
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
             jobs: [...jobsAfterRemoval],
           },
         },
       };
     }
     case WorkflowsActions.WORKFLOW_JOB_CHANGED: {
-      const oldJob = state.workflowAction.workflowData.jobs.find((job) => job.jobId === action.payload.jobId);
+      const oldJob = state.workflowAction.workflowFormData.jobs.find((job) => job.jobId === action.payload.jobId);
       const filteredOldJobData = oldJob.entries.filter((jobEntry) => jobEntry.property !== action.payload.jobEntry.property);
       const updatedJobData = [...filteredOldJobData, action.payload.jobEntry];
       const updatedJobsData = [
-        ...state.workflowAction.workflowData.jobs.filter((jobEntry) => jobEntry.jobId !== action.payload.jobId),
+        ...state.workflowAction.workflowFormData.jobs.filter((jobEntry) => jobEntry.jobId !== action.payload.jobId),
         JobEntryModelFactory.create(oldJob.jobId, oldJob.order, updatedJobData),
       ];
       return {
         ...state,
         workflowAction: {
           ...state.workflowAction,
-          workflowData: {
-            ...state.workflowAction.workflowData,
-            jobs: [...initialState.workflowAction.workflowData.jobs, ...updatedJobsData],
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
+            jobs: [...initialState.workflowAction.workflowFormData.jobs, ...updatedJobsData],
           },
         },
       };
     }
     case WorkflowsActions.WORKFLOW_JOB_TYPE_SWITCHED:
-      const oldJob = state.workflowAction.workflowData.jobs.find((job) => job.jobId === action.payload.jobId);
+      const oldJob = state.workflowAction.workflowFormData.jobs.find((job) => job.jobId === action.payload.jobId);
       const cleanedJobData = JobEntryModelFactory.create(oldJob.jobId, oldJob.order, [action.payload.jobEntry]);
 
       const cleanedJobsData = [
-        ...state.workflowAction.workflowData.jobs.filter((item) => item.jobId !== action.payload.jobId),
+        ...state.workflowAction.workflowFormData.jobs.filter((item) => item.jobId !== action.payload.jobId),
         cleanedJobData,
       ];
       return {
         ...state,
         workflowAction: {
           ...state.workflowAction,
-          workflowData: {
-            ...state.workflowAction.workflowData,
-            jobs: [...initialState.workflowAction.workflowData.jobs, ...cleanedJobsData],
+          workflowFormData: {
+            ...state.workflowAction.workflowFormData,
+            jobs: [...initialState.workflowAction.workflowFormData.jobs, ...cleanedJobsData],
           },
         },
       };

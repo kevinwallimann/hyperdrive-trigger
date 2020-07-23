@@ -85,7 +85,7 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.isWorkflowActive = !!state.workflowAction.workflow ? state.workflowAction.workflow.isActive : false;
       this.backendValidationErrors = state.workflowAction.backendValidationErrors;
       this.workflowFormParts = state.workflowFormParts;
-      this.workflowData = state.workflowAction.workflowData;
+      this.workflowData = state.workflowAction.workflowFormData;
     });
   }
 
