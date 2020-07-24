@@ -147,7 +147,7 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
     }
   }
 
-  private def getUserName: String = {
+  private[services] def getUserName: String = {
     SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
   }
 
