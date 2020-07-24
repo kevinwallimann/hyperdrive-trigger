@@ -26,9 +26,9 @@ import scala.concurrent.{ExecutionContext, Future}
 trait WorkflowHistoryRepository extends Repository {
   import slick.dbio.DBIO
 
-  private[persistance] def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
-  private[persistance] def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
-  private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
+  private[persistance] def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Long]
+  private[persistance] def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Long]
+  private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Long]
 
   def getHistoryForWorkflow(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
   def getWorkflowsFromHistory(leftWorkflowHistoryId: Long, rightWorkflowHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsFromHistory]
@@ -38,7 +38,7 @@ trait WorkflowHistoryRepository extends Repository {
 class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
   import profile.api._
 
-  private def insert(workflow: WorkflowJoined, user: String, operation: DBOperation)(implicit ec: ExecutionContext): DBIO[Int] = {
+  private def insert(workflow: WorkflowJoined, user: String, operation: DBOperation)(implicit ec: ExecutionContext): DBIO[Long] = {
     val workflowHistory = WorkflowHistory(
       history = History(
         changedOn = LocalDateTime.now(),
@@ -48,18 +48,18 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
       workflowId = workflow.id,
       workflow = workflow
     )
-    workflowHistoryTable += workflowHistory
+    workflowHistoryTable returning workflowHistoryTable.map(_.id) += workflowHistory
   }
 
-  override private[persistance] def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+  override private[persistance] def create(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Long] = {
     this.insert(workflow, user, Create)
   }
 
-  override private[persistance] def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+  override private[persistance] def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Long] = {
     this.insert(workflow, user, Update)
   }
 
-  override private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int] = {
+  override private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Long] = {
     this.insert(workflow, user, Delete)
   }
 
