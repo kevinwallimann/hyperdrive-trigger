@@ -30,8 +30,8 @@ trait WorkflowHistoryRepository extends Repository {
   private[persistance] def update(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
   private[persistance] def delete(workflow: WorkflowJoined, user: String)(implicit ec: ExecutionContext): DBIO[Int]
 
-  def getWorkflowHistory(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
-  def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowHistoriesForComparison]
+  def getHistoryForWorkflow(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
+  def getWorkflowsFromHistory(leftWorkflowHistoryId: Long, rightWorkflowHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsFromHistory]
 }
 
 @stereotype.Repository
@@ -63,7 +63,7 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
     this.insert(workflow, user, Delete)
   }
 
-  override def getWorkflowHistory(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]] = {
+  override def getHistoryForWorkflow(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]] = {
     db.run(
       workflowHistoryTable.filter(_.workflowId === workflowId).map(
         row => (row.id, row.changedOn, row.changedBy, row.operation)
@@ -76,11 +76,11 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
     )))
   }
 
-  override def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowHistoriesForComparison] = {
+  override def getWorkflowsFromHistory(leftWorkflowHistoryId: Long, rightWorkflowHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsFromHistory] = {
     val queryResult = db.run(
       (for {
-        leftWorkflowHistory <- workflowHistoryTable if leftWorkflowHistory.id === leftHistoryId
-        rightWorkflowHistory <- workflowHistoryTable if rightWorkflowHistory.id === rightHistoryId
+        leftWorkflowHistory <- workflowHistoryTable if leftWorkflowHistory.id === leftWorkflowHistoryId
+        rightWorkflowHistory <- workflowHistoryTable if rightWorkflowHistory.id === rightWorkflowHistoryId
       } yield {
         (leftWorkflowHistory, rightWorkflowHistory)
       }).result
@@ -88,9 +88,9 @@ class WorkflowHistoryRepositoryImpl extends WorkflowHistoryRepository {
 
     queryResult.map(
       _.headOption.map{ workflowsForComparisonTouple =>
-        WorkflowHistoriesForComparison(workflowsForComparisonTouple._1, workflowsForComparisonTouple._2)
+        WorkflowsFromHistory(workflowsForComparisonTouple._1, workflowsForComparisonTouple._2)
       }.getOrElse(
-        throw new Exception(s"Workflow history with ${leftHistoryId} or ${rightHistoryId} does not exist.")
+        throw new Exception(s"Workflow history with ${leftWorkflowHistoryId} or ${rightWorkflowHistoryId} does not exist.")
       )
     )
   }

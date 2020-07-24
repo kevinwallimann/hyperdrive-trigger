@@ -14,14 +14,14 @@
   -->
 
 <app-dynamic-parts
-  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMPARISON"
   [formParts]="[workflowFormParts.staticJobPart]"
   [valueChanges]="jobChanges"
   [values]="getJobData()">
 </app-dynamic-parts>
 
 <app-select-part
-  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMPARISON"
   [name]="workflowFormParts.jobSwitchPart.name"
   [value]="getValue(workflowFormParts.jobSwitchPart.property)"
   [options]="getJobTypes()"
@@ -31,7 +31,7 @@
 </app-select-part>
 
 <app-dynamic-parts
-  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMPARISON"
   [formParts]="getSelectedJobComponent()"
   [valueChanges]="jobChanges"
   [values]="getJobData()">

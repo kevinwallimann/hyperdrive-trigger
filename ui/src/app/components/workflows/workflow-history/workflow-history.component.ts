@@ -46,8 +46,8 @@ export class WorkflowHistoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.workflowsSubscription = this.store.select(selectWorkflowState).subscribe((state) => {
-      this.loading = state.workflowAction.loading;
-      this.workflowHistory = state.workflowHistory;
+      this.loading = state.history.loading;
+      this.workflowHistory = state.history.workflowHistory;
     });
   }
 }

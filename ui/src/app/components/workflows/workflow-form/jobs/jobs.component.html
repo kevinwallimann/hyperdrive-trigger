@@ -13,7 +13,7 @@
   ~ limitations under the License.
   -->
 
-<button type="button" class="btn btn-sm btn-secondary" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMP" (click)="addJob()">
+<button type="button" class="btn btn-sm btn-secondary" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMPARISON" (click)="addJob()">
   <clr-icon shape="plus"></clr-icon>
   Add job
 </button>
@@ -23,10 +23,10 @@
     <div class="card-title notSelectable" style="word-wrap: break-word;" (click)="toggleJob(job.jobId)">
       <clr-icon shape="angle" [dir]="isJobHidden(job.jobId)?'right':'down'"></clr-icon>
       {{getJobName(job.jobId)}}
-      <button type="button" class="btn btn-link" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMP">
+      <button type="button" class="btn btn-link" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMPARISON">
         <clr-icon shape="drag-handle"></clr-icon>
       </button>
-      <button type="button" style="float: right;" class="btn btn-link" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMP"
+      <button type="button" style="float: right;" class="btn btn-link" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMPARISON"
               (click)="removeJob(job.jobId)">
         <clr-icon shape="trash" class="is-error"></clr-icon>
       </button>

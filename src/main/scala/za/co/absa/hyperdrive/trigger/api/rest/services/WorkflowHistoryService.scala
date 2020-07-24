@@ -16,7 +16,7 @@
 package za.co.absa.hyperdrive.trigger.api.rest.services
 
 import org.springframework.stereotype.Service
-import za.co.absa.hyperdrive.trigger.models.{History, WorkflowHistoriesForComparison}
+import za.co.absa.hyperdrive.trigger.models.{History, WorkflowsFromHistory}
 import za.co.absa.hyperdrive.trigger.persistance.WorkflowHistoryRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,19 +24,19 @@ import scala.concurrent.{ExecutionContext, Future}
 trait WorkflowHistoryService {
   val workflowHistoryRepository: WorkflowHistoryRepository
 
-  def getWorkflowHistory(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
-  def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowHistoriesForComparison]
+  def getHistoryForWorkflow(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]]
+  def getWorkflowsFromHistory(leftWorkflowHistoryId: Long, rightWorkflowHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsFromHistory]
 }
 
 @Service
 class WorkflowHistoryServiceImpl(override val workflowHistoryRepository: WorkflowHistoryRepository) extends WorkflowHistoryService {
 
-  override def getWorkflowHistory(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]] = {
-    workflowHistoryRepository.getWorkflowHistory(workflowId)
+  override def getHistoryForWorkflow(workflowId: Long)(implicit ec: ExecutionContext): Future[Seq[History]] = {
+    workflowHistoryRepository.getHistoryForWorkflow(workflowId)
   }
 
-  override def getWorkflowsForComparison(leftHistoryId: Long, rightHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowHistoriesForComparison] = {
-    workflowHistoryRepository.getWorkflowsForComparison(leftHistoryId, rightHistoryId)
+  override def getWorkflowsFromHistory(leftWorkflowHistoryId: Long, rightWorkflowHistoryId: Long)(implicit ec: ExecutionContext): Future[WorkflowsFromHistory] = {
+    workflowHistoryRepository.getWorkflowsFromHistory(leftWorkflowHistoryId, rightWorkflowHistoryId)
   }
 
 }

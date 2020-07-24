@@ -32,7 +32,7 @@ case class WorkflowHistory(
   workflow: WorkflowJoined
 )
 
-case class WorkflowHistoriesForComparison(
+case class WorkflowsFromHistory(
   leftWorkflowHistory: WorkflowHistory,
   rightWorkflowHistory: WorkflowHistory
 )

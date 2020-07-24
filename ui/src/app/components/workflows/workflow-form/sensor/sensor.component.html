@@ -14,7 +14,7 @@
   -->
 
 <app-select-part
-  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMPARISON"
   [name]="workflowFormParts.sensorSwitchPart.name"
   [value]="getValue(workflowFormParts.sensorSwitchPart.property)"
   [options]="getSensorTypes()"
@@ -24,7 +24,7 @@
 </app-select-part>
 
 <app-dynamic-parts
-  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMP"
+  [isShow]="mode == workflowModes.SHOW || mode == workflowModes.COMPARISON"
   [formParts]="getSelectedSensorComponent()"
   [valueChanges]="sensorChanges"
   [values]="sensorData">

@@ -20,6 +20,7 @@ import { WorkflowFormPartsModel } from '../../models/workflowFormParts.model';
 import { WorkflowEntryModel } from '../../models/workflowEntry.model';
 import { JobEntryModel, JobEntryModelFactory } from '../../models/jobEntry.model';
 import { SortAttributesModel } from '../../models/search/sortAttributes.model';
+import { WorkflowFormDataModel } from '../../models/workflowFormData.model';
 
 export interface State {
   projects: ProjectModel[];
@@ -29,29 +30,19 @@ export interface State {
     mode: string;
     loading: boolean;
     workflow: WorkflowJoinedModel;
+    workflowFormParts: WorkflowFormPartsModel;
     backendValidationErrors: string[];
-    workflowFormData: {
-      details: WorkflowEntryModel[];
-      sensor: WorkflowEntryModel[];
-      jobs: JobEntryModel[];
-    };
+    workflowFormData: WorkflowFormDataModel;
   };
   workflowsSort: SortAttributesModel;
   workflowsFilters: any[];
-  workflowHistory: any[];
-  historyData: {
-    left: {
-      detailsData: WorkflowEntryModel[];
-      sensorData: WorkflowEntryModel[];
-      jobsData: JobEntryModel[];
-    };
-    right: {
-      detailsData: WorkflowEntryModel[];
-      sensorData: WorkflowEntryModel[];
-      jobsData: JobEntryModel[];
-    };
+  history: {
+    loading: boolean;
+    workflowHistory: any[];
+    workflowFormParts: WorkflowFormPartsModel;
+    leftWorkflowHistoryData: WorkflowFormDataModel;
+    rightWorkflowHistoryData: WorkflowFormDataModel;
   };
-  workflowFormParts: WorkflowFormPartsModel;
 }
 
 const initialState: State = {
@@ -62,6 +53,7 @@ const initialState: State = {
     mode: undefined,
     loading: true,
     workflow: undefined,
+    workflowFormParts: undefined,
     backendValidationErrors: [],
     workflowFormData: {
       details: [],
@@ -71,20 +63,13 @@ const initialState: State = {
   },
   workflowsSort: undefined,
   workflowsFilters: undefined,
-  workflowHistory: [],
-  historyData: {
-    left: {
-      detailsData: [],
-      sensorData: [],
-      jobsData: [],
-    },
-    right: {
-      detailsData: [],
-      sensorData: [],
-      jobsData: [],
-    },
+  history: {
+    loading: true,
+    workflowHistory: [],
+    workflowFormParts: undefined,
+    leftWorkflowHistoryData: undefined,
+    rightWorkflowHistoryData: undefined,
   },
-  workflowFormParts: undefined,
 };
 
 function removeJob(jobId: string, jobsOriginal: JobEntryModel[]): JobEntryModel[] {
@@ -108,7 +93,15 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
     case WorkflowsActions.INITIALIZE_WORKFLOWS:
       return { ...state, loading: true };
     case WorkflowsActions.INITIALIZE_WORKFLOWS_SUCCESS:
-      return { ...state, loading: false, projects: action.payload.projects, workflowFormParts: action.payload.workflowFormParts };
+      return {
+        ...state,
+        loading: false,
+        projects: action.payload.projects,
+        workflowAction: {
+          ...state.workflowAction,
+          workflowFormParts: action.payload.workflowFormParts,
+        },
+      };
     case WorkflowsActions.INITIALIZE_WORKFLOWS_FAILURE:
       return { ...initialState, loading: false };
 
@@ -116,7 +109,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
       return {
         ...state,
         workflowAction: {
-          ...initialState.workflowAction,
+          ...state.workflowAction,
           id: action.payload.id,
           mode: action.payload.mode,
           loading: true,
@@ -446,39 +439,50 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
     case WorkflowsActions.LOAD_WORKFLOW_HISTORY:
       return {
         ...state,
-        workflowAction: {
-          ...state.workflowAction,
+        history: {
+          ...initialState.history,
           loading: true,
         },
       };
     case WorkflowsActions.LOAD_WORKFLOW_HISTORY_SUCCESS:
       return {
         ...state,
-        workflowAction: {
-          ...state.workflowAction,
+        history: {
+          ...state.history,
           loading: false,
+          workflowHistory: action.payload,
         },
-        workflowHistory: action.payload,
       };
     case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON:
       return {
         ...state,
-        loading: true,
+        history: {
+          ...state.history,
+          loading: true,
+        },
       };
     case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS:
       return {
         ...state,
-        loading: false,
-        workflowFormParts: action.payload.workflowFormParts,
-        historyData: {
-          left: action.payload.left,
-          right: action.payload.right,
+        history: {
+          ...state.history,
+          loading: false,
+          workflowFormParts: action.payload.workflowFormParts,
+          leftWorkflowHistoryData: {
+            details: action.payload.left.details,
+            sensor: action.payload.left.sensor,
+            jobs: action.payload.left.jobs,
+          },
+          rightWorkflowHistoryData: action.payload.right,
         },
       };
     case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE:
       return {
         ...state,
-        loading: false,
+        history: {
+          ...state.history,
+          loading: false,
+        },
       };
     default:
       return state;

@@ -48,11 +48,10 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
                           override val workflowValidationService: WorkflowValidationService) extends WorkflowService {
 
   def createWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[Seq[ApiError], WorkflowJoined]] = {
-    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
     for {
       validationErrors <- workflowValidationService.validateOnInsert(workflow)
       result <- doIf(validationErrors, () => {
-        workflowRepository.insertWorkflow(workflow, user).flatMap {
+        workflowRepository.insertWorkflow(workflow, getUserName).flatMap {
           case Left(error) => Future.successful(Left(error))
           case Right(workflowId) => getWorkflow(workflowId).map(Right(_))
         }
@@ -75,12 +74,10 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
   }
 
   def deleteWorkflow(id: Long)(implicit ec: ExecutionContext): Future[Boolean] = {
-    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
-    workflowRepository.deleteWorkflow(id, user).map(_ => true)
+    workflowRepository.deleteWorkflow(id, getUserName).map(_ => true)
   }
 
   override def updateWorkflow(workflow: WorkflowJoined)(implicit ec: ExecutionContext): Future[Either[Seq[ApiError], WorkflowJoined]] = {
-    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
     for {
       validationErrors <- workflowValidationService.validateOnUpdate(workflow)
       result <- doIf(validationErrors, () => {
@@ -102,7 +99,7 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
             )
           )
 
-          workflowRepository.updateWorkflow(updatedWorkflow, user).flatMap {
+          workflowRepository.updateWorkflow(updatedWorkflow, getUserName).flatMap {
             case Left(error) => Future.successful(Left(error))
             case Right(_) => getWorkflow(workflow.id).map(Right(_))
           }
@@ -114,8 +111,7 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
   }
 
   override def switchWorkflowActiveState(id: Long)(implicit ec: ExecutionContext): Future[Boolean] = {
-    val user = SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
-    workflowRepository.switchWorkflowActiveState(id, user).map(_ => true)
+    workflowRepository.switchWorkflowActiveState(id, getUserName).map(_ => true)
   }
 
   override def getProjectNames()(implicit ec: ExecutionContext): Future[Set[String]] = {
@@ -149,6 +145,10 @@ class WorkflowServiceImpl(override val workflowRepository: WorkflowRepository,
     } else {
       Future.successful(Left(validationErrors))
     }
+  }
+
+  private def getUserName: String = {
+    SecurityContextHolder.getContext.getAuthentication.getPrincipal.asInstanceOf[UserDetails].getUsername
   }
 
 }

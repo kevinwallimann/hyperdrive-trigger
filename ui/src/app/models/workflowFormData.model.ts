@@ -13,10 +13,17 @@
  * limitations under the License.
  */
 
-export const workflowModes = {
-  SHOW: 'show',
-  CREATE: 'create',
-  EDIT: 'edit',
-  COPY: 'copy',
-  COMPARISON: 'comparison',
+import { WorkflowEntryModel } from './workflowEntry.model';
+import { JobEntryModel } from './jobEntry.model';
+
+export type WorkflowFormDataModel = {
+  details: WorkflowEntryModel[];
+  sensor: WorkflowEntryModel[];
+  jobs: JobEntryModel[];
 };
+
+export class WorkflowFormDataModelFactory {
+  static create(details: WorkflowEntryModel[], sensor: WorkflowEntryModel[], jobs: JobEntryModel[]): WorkflowFormDataModel {
+    return { details: details, sensor: sensor, jobs: jobs };
+  }
+}

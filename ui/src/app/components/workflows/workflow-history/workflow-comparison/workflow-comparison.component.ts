@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
@@ -14,7 +14,7 @@ import { JobEntryModel } from '../../../../models/jobEntry.model';
   templateUrl: './workflow-comparison.component.html',
   styleUrls: ['./workflow-comparison.component.scss'],
 })
-export class WorkflowComparisonComponent implements OnInit {
+export class WorkflowComparisonComponent implements OnInit, OnDestroy {
   workflowsSubscription: Subscription = null;
   paramsSubscription: Subscription;
 
@@ -36,26 +36,20 @@ export class WorkflowComparisonComponent implements OnInit {
 
   constructor(private store: Store<AppState>, route: ActivatedRoute) {
     this.paramsSubscription = route.params.subscribe((parameters) => {
-      console.log(parameters);
-      // this.id = parameters.id;
       this.store.dispatch(new LoadWorkflowsHistForComparison({ left: parameters.historyIdLeft, right: parameters.historyIdRight }));
     });
   }
 
   ngOnInit(): void {
     this.workflowsSubscription = this.store.select(selectWorkflowState).subscribe((state) => {
-      this.workflowFormParts = state.workflowFormParts;
-      this.workflowDataLeft = {
-        details: state.historyData.left.detailsData,
-        sensor: state.historyData.left.sensorData,
-        jobs: state.historyData.left.jobsData,
-      };
-      this.workflowDataRight = {
-        details: state.historyData.right.detailsData,
-        sensor: state.historyData.right.sensorData,
-        jobs: state.historyData.right.jobsData,
-      };
-      this.loading = state.loading;
+      this.workflowFormParts = state.history.workflowFormParts;
+      this.workflowDataLeft = state.history.leftWorkflowHistoryData;
+      this.workflowDataRight = state.history.rightWorkflowHistoryData;
+      this.loading = state.history.loading;
     });
+  }
+
+  ngOnDestroy(): void {
+    !!this.workflowsSubscription && this.workflowsSubscription.unsubscribe();
   }
 }

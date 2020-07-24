@@ -26,7 +26,7 @@
 </div>
 
 <form clrForm (ngSubmit)="mode != workflowModes.EDIT ? createWorkflow() : updateWorkflow()" #workflowForm="ngForm" novalidate>
-  <div class="btn-group" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMP">
+  <div class="btn-group" *ngIf="mode != workflowModes.SHOW && mode != workflowModes.COMPARISON">
     <button type="submit" class="btn btn-sm btn-secondary" *ngIf="mode != workflowModes.EDIT">
       <clr-icon shape="check"></clr-icon>
       Create new workflow

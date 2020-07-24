@@ -265,14 +265,14 @@ export class LoadWorkflowsHistForComparisonSuccess implements Action {
     public payload: {
       workflowFormParts: WorkflowFormPartsModel;
       left: {
-        detailsData: WorkflowEntryModel[];
-        sensorData: WorkflowEntryModel[];
-        jobsData: JobEntryModel[];
+        details: WorkflowEntryModel[];
+        sensor: WorkflowEntryModel[];
+        jobs: JobEntryModel[];
       };
       right: {
-        detailsData: WorkflowEntryModel[];
-        sensorData: WorkflowEntryModel[];
-        jobsData: JobEntryModel[];
+        details: WorkflowEntryModel[];
+        sensor: WorkflowEntryModel[];
+        jobs: JobEntryModel[];
       };
     },
   ) {}

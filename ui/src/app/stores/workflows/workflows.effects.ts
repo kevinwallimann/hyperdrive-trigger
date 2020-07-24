@@ -108,7 +108,7 @@ export class WorkflowsEffects {
         } else {
           return this.workflowService.getWorkflow(action.payload.id).pipe(
             mergeMap((worfklow: WorkflowJoinedModel) => {
-              const workflowData = new WorkflowDataModel(worfklow, state.workflowFormParts.dynamicParts);
+              const workflowData = new WorkflowDataModel(worfklow, state.workflowAction.workflowFormParts.dynamicParts);
 
               return [
                 {
@@ -378,16 +378,8 @@ export class WorkflowsEffects {
               type: WorkflowActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS,
               payload: {
                 workflowFormParts: workflowFormParts,
-                left: {
-                  detailsData: left.getDetailsData(),
-                  sensorData: left.getSensorData(),
-                  jobsData: left.getJobsData(),
-                },
-                right: {
-                  detailsData: right.getDetailsData(),
-                  sensorData: right.getSensorData(),
-                  jobsData: right.getJobsData(),
-                },
+                left: left.getWorkflowFromData(),
+                right: right.getWorkflowFromData(),
               },
             },
           ];
@@ -402,35 +394,6 @@ export class WorkflowsEffects {
       );
     }),
   );
-
-  // @Effect({ dispatch: true })
-  // workflowHistForComparisonLoad = this.actions.pipe(
-  //   ofType(WorkflowActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON),
-  //   withLatestFrom(this.store.select(selectWorkflowState)),
-  //   switchMap(([action, state]: [WorkflowActions.LoadWorkflowsHistForComparison, fromWorkflows.State]) => {
-  //     return this.workflowService.getWorkflowHistForComparison(action.payload.left, action.payload.right).pipe(
-  //       mergeMap((result: WorkflowHistForComparisonModel) => {
-  //         return [
-  //           {
-  //             type: WorkflowActions.LOAD_WORKFLOWS_HIST_FOR_COMPARISON_SUCCESS,
-  //             payload: {
-  //               left: {
-  //                 detailsData: [],
-  //                 sensorData: [],
-  //                 jobsData: []
-  //               },
-  //               right: {
-  //                 detailsData: [],
-  //                 sensorData: [],
-  //                 jobsData: []
-  //               }
-  //             },
-  //           },
-  //         ];
-  //       }),
-  //     );
-  //   }),
-  // );
 
   isBackendValidationError(errorResponse: any): boolean {
     return (
