@@ -18,8 +18,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { JobComponent } from './job.component';
 import { provideMockStore } from '@ngrx/store/testing';
 import {
+  DynamicFormPart,
   DynamicFormPartFactory,
-  DynamicFormPartsFactory,
+  DynamicFormPartsFactory, FormPart,
   FormPartFactory,
   PartValidationFactory,
   WorkflowFormPartsModelFactory,
@@ -33,60 +34,30 @@ describe('JobComponent', () => {
   let fixture: ComponentFixture<JobComponent>;
   let underTest: JobComponent;
 
-  const workflowFormParts =  WorkflowFormPartsModelFactory.create(
-    [],
-    undefined,
-    FormPartFactory.create('jobStaticPart', 'jobStaticPart', 'jobStaticPart', PartValidationFactory.create(true)),
-    FormPartFactory.create('switchPartName', 'switchPartProp', 'switchPartType', PartValidationFactory.create(true), [
-      'optionOne',
-      'optionTwo',
-    ]),
-    DynamicFormPartsFactory.create(
-      [],
-      [
-        DynamicFormPartFactory.create('optionOne', [
-          FormPartFactory.create('partOne', 'partOne', 'partOne', PartValidationFactory.create(true)),
-        ]),
-        DynamicFormPartFactory.create('optionTwo', [
-          FormPartFactory.create('partTwo', 'partTwo', 'partTwo', PartValidationFactory.create(true)),
-        ]),
-      ],
-    ),
-    );
-
-  const mode = 'mode'
-
-  const jobsData = [JobEntryModelFactory.createWithUuid(0, [WorkflowEntryModelFactory.create('jobStaticPart', 'value')])];
-  // const initialAppState = {
-  //   workflows: {
-  //     workflowFormParts: WorkflowFormPartsModelFactory.create(
-  //       [],
-  //       undefined,
-  //       FormPartFactory.create('jobStaticPart', 'jobStaticPart', 'jobStaticPart', PartValidationFactory.create(true)),
-  //       FormPartFactory.create('switchPartName', 'switchPartProp', 'switchPartType', PartValidationFactory.create(true), [
-  //         'optionOne',
-  //         'optionTwo',
-  //       ]),
-  //       DynamicFormPartsFactory.create(
-  //         [],
-  //         [
-  //           DynamicFormPartFactory.create('optionOne', [
-  //             FormPartFactory.create('partOne', 'partOne', 'partOne', PartValidationFactory.create(true)),
-  //           ]),
-  //           DynamicFormPartFactory.create('optionTwo', [
-  //             FormPartFactory.create('partTwo', 'partTwo', 'partTwo', PartValidationFactory.create(true)),
-  //           ]),
-  //         ],
-  //       ),
-  //     ),
-  //     workflowAction: {
-  //       mode: 'mode',
-  //       workflowData: {
-  //         jobs: [JobEntryModelFactory.createWithUuid(0, [WorkflowEntryModelFactory.create('jobStaticPart', 'value')])],
-  //       },
-  //     },
-  //   },
-  // };
+  const jobStaticPart: FormPart = FormPartFactory.create('jobStaticPart', 'jobStaticPart', 'jobStaticPart', PartValidationFactory.create(true));
+  const jobSwitchPart: FormPart = FormPartFactory.create('switchPartName', 'switchPartProp', 'switchPartType', PartValidationFactory.create(true), [
+    'optionOne',
+    'optionTwo',
+  ]);
+  const jobDynamicPartOne: DynamicFormPart = DynamicFormPartFactory.create('optionOne', [
+    FormPartFactory.create('partOne', 'partOne', 'partOne', PartValidationFactory.create(true)),
+  ]);
+  const jobDynamicPartTwo: DynamicFormPart = DynamicFormPartFactory.create('optionTwo', [
+    FormPartFactory.create('partTwo', 'partTwo', 'partTwo', PartValidationFactory.create(true)),
+  ])
+  const workflowFormParts =  WorkflowFormPartsModelFactory.create([], undefined,
+      jobStaticPart,
+      jobSwitchPart,
+    DynamicFormPartsFactory.create([], [ jobDynamicPartOne, jobDynamicPartTwo ]),
+  );
+  const jobsData = [
+    JobEntryModelFactory.createWithUuid(0, [
+      WorkflowEntryModelFactory.create('jobStaticPart', 'value'),
+      WorkflowEntryModelFactory.create('switchPartProp', 'value')
+    ])
+  ];
+  const mode = 'mode';
+  const jobId: string = jobsData[0].jobId;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -100,7 +71,7 @@ describe('JobComponent', () => {
 
     underTest.workflowFormParts = workflowFormParts;
     underTest.mode = mode;
-    underTest.jobId = '0';
+    underTest.jobId = jobId;
     underTest.jobsData = jobsData;
     underTest.changes = new Subject<Action>();
   });
@@ -138,8 +109,36 @@ describe('JobComponent', () => {
   //   });
   // }));
   //
+
+  it('getJobData() should return return job data', async(() => {
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      const result = underTest.getJobData();
+
+      expect(result).toEqual(jobsData[0].entries);
+    });
+  }));
+
+  it('getJobData() should return empty array when job data does not exist for job with defined id', async(() => {
+    underTest.jobId = '999';
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      const result = underTest.getJobData();
+
+      expect(result).toEqual([]);
+    });
+  }));
+
+  // it('getSelectedJob() should bla', async(() => {
+  //   fixture.detectChanges();
+  //   fixture.whenStable().then(() => {
+  //     const result = underTest.getSelectedJob();
+  //
+  //     expect(result).toEqual([]);
+  //   });
+  // }));
+
   it('getValue() should return value when property exists', async(() => {
-    underTest.jobId = jobsData[0].jobId;
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       const queriedDetail = jobsData[0].entries[0];
@@ -148,7 +147,6 @@ describe('JobComponent', () => {
   }));
 
   it('getValue() should return undefined when property does not exist', async(() => {
-    underTest.jobId = jobsData[0].jobId;
     const undefinedProperty = 'undefinedProperty';
 
     fixture.detectChanges();
