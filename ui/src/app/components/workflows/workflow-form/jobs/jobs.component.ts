@@ -15,10 +15,10 @@
 
 import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import cloneDeep from 'lodash/cloneDeep';
 import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
 import { WorkflowAddEmptyJob, WorkflowRemoveJob } from '../../../../stores/workflows/workflows.actions';
 import { JobEntryModel } from '../../../../models/jobEntry.model';
@@ -34,6 +34,7 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
   @Input() mode: string;
   @Input() workflowFormParts: WorkflowFormPartsModel;
   @Input() jobsData: JobEntryModel[];
+  @Input() changes: Subject<Action>;
 
   workflowModes = workflowModes;
 
@@ -41,7 +42,7 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
 
   jobsUnfoldSubscription: Subscription;
 
-  constructor(private store: Store<AppState>) {
+  constructor() {
     this.hiddenJobs = new Set();
   }
 
@@ -53,7 +54,7 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (this.jobsData.length == 0) {
-      this.store.dispatch(new WorkflowAddEmptyJob(0));
+      this.changes.next(new WorkflowAddEmptyJob(0));
     }
   }
 
@@ -74,11 +75,11 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
   }
 
   addJob() {
-    this.store.dispatch(new WorkflowAddEmptyJob(this.jobsData.length));
+    this.changes.next(new WorkflowAddEmptyJob(this.jobsData.length));
   }
 
   removeJob(jobId: string): void {
-    this.store.dispatch(new WorkflowRemoveJob(jobId));
+    this.changes.next(new WorkflowRemoveJob(jobId));
   }
 
   getJobName(jobId: string) {

@@ -21,8 +21,8 @@ import { WorkflowEntryModel } from '../../models/workflowEntry.model';
 import { JobEntryModel } from '../../models/jobEntry.model';
 import { WorkflowModel } from '../../models/workflow.model';
 import { SortAttributesModel } from '../../models/search/sortAttributes.model';
-import { HistoryModel } from "../../models/historyModel";
-import { WorkflowFormDataModel } from "../../models/workflowFormData.model";
+import { HistoryModel } from '../../models/historyModel';
+import { WorkflowFormDataModel } from '../../models/workflowFormData.model';
 
 export const INITIALIZE_WORKFLOWS = 'INITIALIZE_WORKFLOWS';
 export const INITIALIZE_WORKFLOWS_SUCCESS = 'INITIALIZE_WORKFLOWS_SUCCESS';

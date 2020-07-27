@@ -119,6 +119,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
         ...state,
         workflowAction: {
           ...initialState.workflowAction,
+          workflowFormParts: state.workflowAction.workflowFormParts,
           loading: false,
         },
       };
@@ -278,7 +279,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
         ...state,
         projects: [...newProjects],
         workflowAction: {
-          ...initialState.workflowAction,
+          ...state.workflowAction,
         },
         loading: false,
       };

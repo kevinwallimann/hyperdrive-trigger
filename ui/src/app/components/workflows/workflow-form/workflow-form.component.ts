@@ -14,9 +14,9 @@ import {
   SwitchWorkflowActiveState,
   UpdateWorkflow,
 } from '../../../stores/workflows/workflows.actions';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { AppState } from '../../../stores/app.reducers';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ConfirmationDialogService } from '../../../services/confirmation-dialog/confirmation-dialog.service';
 import { PreviousRouteService } from '../../../services/previousRoute/previous-route.service';
 import { Router } from '@angular/router';
@@ -39,6 +39,8 @@ export class WorkflowFormComponent implements OnDestroy {
   @Input() id: number;
   @Input() mode: string;
   @Input() backendValidationErrors: string[];
+  @Input() changes: Subject<Action>;
+  @Input() isWorkflowActive;
 
   workflowModes = workflowModes;
   absoluteRoutes = absoluteRoutes;
@@ -51,8 +53,6 @@ export class WorkflowFormComponent implements OnDestroy {
   workflowSubscription: Subscription;
   confirmationDialogServiceSubscription: Subscription = null;
   runWorkflowDialogSubscription: Subscription = null;
-
-  isWorkflowActive = true;
 
   constructor(
     private store: Store<AppState>,

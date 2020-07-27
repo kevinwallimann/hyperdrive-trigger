@@ -16,7 +16,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
 import { WorkflowSensorChanged, WorkflowSensorTypeSwitched } from '../../../../stores/workflows/workflows.actions';
 import { DynamicFormPart, FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
@@ -32,19 +32,23 @@ export class SensorComponent implements OnInit, OnDestroy {
   @Input() mode: string;
   @Input() workflowFormParts: WorkflowFormPartsModel;
   @Input() sensorData: WorkflowEntryModel[];
+  @Input() changes: Subject<Action>;
+
   workflowModes = workflowModes;
 
   sensorChanges: Subject<WorkflowEntryModel> = new Subject<WorkflowEntryModel>();
   sensorChangesSubscription: Subscription;
 
-  constructor(private store: Store<AppState>) {}
+  constructor() {
+    // do nothing
+  }
 
   ngOnInit(): void {
     this.sensorChangesSubscription = this.sensorChanges.pipe(delay(0)).subscribe((sensorChange) => {
       if (sensorChange.property == this.workflowFormParts.sensorSwitchPart.property) {
-        this.store.dispatch(new WorkflowSensorTypeSwitched(WorkflowEntryModelFactory.create(sensorChange.property, sensorChange.value)));
+        this.changes.next(new WorkflowSensorTypeSwitched(WorkflowEntryModelFactory.create(sensorChange.property, sensorChange.value)));
       } else {
-        this.store.dispatch(new WorkflowSensorChanged(WorkflowEntryModelFactory.create(sensorChange.property, sensorChange.value)));
+        this.changes.next(new WorkflowSensorChanged(WorkflowEntryModelFactory.create(sensorChange.property, sensorChange.value)));
       }
     });
   }

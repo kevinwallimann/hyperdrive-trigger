@@ -17,7 +17,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
 import { delay, distinctUntilChanged } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
 import { WorkflowDetailsChanged } from '../../../../stores/workflows/workflows.actions';
 import { FormPart } from '../../../../models/workflowFormParts.model';
@@ -38,11 +38,15 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
   detailsChanges: Subject<WorkflowEntryModel> = new Subject<WorkflowEntryModel>();
   detailsChangesSubscription: Subscription;
 
-  constructor(private store: Store<AppState>) {}
+  @Input() changes: Subject<Action>;
+
+  constructor() {
+    // do nothing
+  }
 
   ngOnInit(): void {
     this.detailsChangesSubscription = this.detailsChanges.pipe(distinctUntilChanged(), delay(0)).subscribe((newValue) => {
-      this.store.dispatch(new WorkflowDetailsChanged(WorkflowEntryModelFactory.create(newValue.property, newValue.value)));
+      this.changes.next(new WorkflowDetailsChanged(WorkflowEntryModelFactory.create(newValue.property, newValue.value)));
     });
   }
 

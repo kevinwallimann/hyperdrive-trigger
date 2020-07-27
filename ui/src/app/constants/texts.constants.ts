@@ -43,9 +43,7 @@ export const texts = {
   UPDATE_WORKFLOW_SUCCESS_NOTIFICATION: 'Workflow has been updated.',
   UPDATE_WORKFLOW_FAILURE_NOTIFICATION: 'Sorry, something went wrong. Try again.',
 
-  LOAD_HISTORY_FOR_WORKFLOW_SUCCESS_NOTIFICATION: 'History for workflow has been successfully loaded.',
   LOAD_HISTORY_FOR_WORKFLOW_FAILURE_NOTIFICATION: 'Sorry, something went wrong. Try again.',
-  LOAD_WORKFLOWS_FROM_HISTORY_SUCCESS_NOTIFICATION: 'Workflows from history have been successfully loaded.',
   LOAD_WORKFLOWS_FROM_HISTORY_FAILURE_NOTIFICATION: 'Sorry, something went wrong. Try again.',
 
   CRON_QUARTZ_INVALID_FOR_USER_FRIENDLY: 'Invalid quartz expression for user friendly input. Default will be used.',

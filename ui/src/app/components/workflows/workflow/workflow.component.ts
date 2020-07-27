@@ -16,8 +16,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppState, selectWorkflowState } from '../../../stores/app.reducers';
-import { Subscription } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Subject, Subscription } from 'rxjs';
+import { Action, Store } from '@ngrx/store';
 import {
   DeleteWorkflow,
   CreateWorkflow,
@@ -65,6 +65,9 @@ export class WorkflowComponent implements OnInit, OnDestroy {
   };
   workflowFormParts: WorkflowFormPartsModel;
 
+  changes: Subject<Action> = new Subject<Action>();
+  changesSubscription: Subscription;
+
   constructor(
     private store: Store<AppState>,
     private confirmationDialogService: ConfirmationDialogService,
@@ -85,8 +88,11 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.isWorkflowActive = !!state.workflowAction.workflow ? state.workflowAction.workflow.isActive : false;
       this.backendValidationErrors = state.workflowAction.backendValidationErrors;
       this.workflowFormParts = state.workflowAction.workflowFormParts;
-      console.log('loading workflow form parts', state);
+      console.log('asdasdloading', this.workflowFormParts);
       this.workflowData = state.workflowAction.workflowFormData;
+    });
+    this.changesSubscription = this.changes.subscribe((state) => {
+      this.store.dispatch(state);
     });
   }
 

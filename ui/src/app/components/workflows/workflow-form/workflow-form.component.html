@@ -68,7 +68,8 @@
             <app-workflow-details
               [mode]="mode"
               [parts]="workflowFormParts.detailsParts"
-              [data]="workflowData.details">
+              [data]="workflowData.details"
+              [changes]="changes">
             </app-workflow-details>
           </div>
         </div>
@@ -84,7 +85,8 @@
             <app-sensor
               [mode]="mode"
               [workflowFormParts]="workflowFormParts"
-              [sensorData]="workflowData.sensor">
+              [sensorData]="workflowData.sensor"
+              [changes]="changes">
             </app-sensor>
           </div>
         </div>
@@ -101,7 +103,8 @@
               [jobsUnfold]="jobsUnfold"
               [mode]="mode"
               [workflowFormParts]="workflowFormParts"
-              [jobsData]="getJobsData()">
+              [jobsData]="getJobsData()"
+              [changes]="changes">
             </app-jobs>
           </div>
         </div>

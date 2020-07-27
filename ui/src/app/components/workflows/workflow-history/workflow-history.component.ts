@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../stores/app.reducers';
 import { ActivatedRoute } from '@angular/router';
 import { absoluteRoutes } from 'src/app/constants/routes.constants';
-import {LoadHistoryForWorkflow} from "../../../stores/workflows/workflows.actions";
+import { LoadHistoryForWorkflow } from '../../../stores/workflows/workflows.actions';
 
 @Component({
   selector: 'app-workflow-history',

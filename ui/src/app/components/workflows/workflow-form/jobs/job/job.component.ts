@@ -17,7 +17,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { workflowModes } from '../../../../../models/enums/workflowModes.constants';
 import { DynamicFormPart, FormPart, WorkflowFormPartsModel } from '../../../../../models/workflowFormParts.model';
-import { Store } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../../../stores/app.reducers';
 import { WorkflowJobChanged, WorkflowJobTypeSwitched } from '../../../../../stores/workflows/workflows.actions';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../../models/workflowEntry.model';
@@ -34,25 +34,28 @@ export class JobComponent implements OnInit, OnDestroy {
   @Input() mode: string;
   @Input() workflowFormParts: WorkflowFormPartsModel;
   @Input() jobsData: JobEntryModel[];
+  @Input() changes: Subject<Action>;
 
   workflowModes = workflowModes;
 
   jobChanges: Subject<WorkflowEntryModel> = new Subject<WorkflowEntryModel>();
   jobChangesSubscription: Subscription;
 
-  constructor(private store: Store<AppState>) {}
+  constructor() {
+    // do nothing
+  }
 
   ngOnInit(): void {
     this.jobChangesSubscription = this.jobChanges.pipe(delay(0)).subscribe((jobChange) => {
       if (jobChange.property == this.workflowFormParts.jobSwitchPart.property) {
-        this.store.dispatch(
+        this.changes.next(
           new WorkflowJobTypeSwitched({
             jobId: this.jobId,
             jobEntry: WorkflowEntryModelFactory.create(jobChange.property, jobChange.value),
           }),
         );
       } else {
-        this.store.dispatch(
+        this.changes.next(
           new WorkflowJobChanged({ jobId: this.jobId, jobEntry: WorkflowEntryModelFactory.create(jobChange.property, jobChange.value) }),
         );
       }

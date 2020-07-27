@@ -36,7 +36,7 @@ class WorkflowServiceTest extends AsyncFlatSpec with Matchers with MockitoSugar 
   private val workflowValidationService = mock[WorkflowValidationService]
   private val userName = "fakeUserName"
   private val underTest = new WorkflowServiceImpl(workflowRepository, dagInstanceRepository, workflowValidationService){
-    override private[services] def getUserName: String = userName
+    override private[services] def getUserName: () => String = () => userName
   }
 
   before {
