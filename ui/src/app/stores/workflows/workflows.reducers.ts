@@ -17,7 +17,6 @@ import * as WorkflowsActions from '../workflows/workflows.actions';
 import { ProjectModel, ProjectModelFactory } from '../../models/project.model';
 import { WorkflowJoinedModel } from '../../models/workflowJoined.model';
 import { WorkflowFormPartsModel } from '../../models/workflowFormParts.model';
-import { WorkflowEntryModel } from '../../models/workflowEntry.model';
 import { JobEntryModel, JobEntryModelFactory } from '../../models/jobEntry.model';
 import { SortAttributesModel } from '../../models/search/sortAttributes.model';
 import { WorkflowFormDataModel } from '../../models/workflowFormData.model';
@@ -436,7 +435,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
         ...state,
         workflowsFilters: action.payload,
       };
-    case WorkflowsActions.LOAD_WORKFLOW_HISTORY:
+    case WorkflowsActions.LOAD_HISTORY_FOR_WORKFLOW:
       return {
         ...state,
         history: {
@@ -444,7 +443,7 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
           loading: true,
         },
       };
-    case WorkflowsActions.LOAD_WORKFLOW_HISTORY_SUCCESS:
+    case WorkflowsActions.LOAD_HISTORY_FOR_WORKFLOW_SUCCESS:
       return {
         ...state,
         history: {
@@ -453,34 +452,38 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
           workflowHistory: action.payload,
         },
       };
-    case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON:
+    case WorkflowsActions.LOAD_HISTORY_FOR_WORKFLOW_FAILURE:
       return {
         ...state,
         history: {
-          ...state.history,
+          ...initialState.history,
+          loading: false,
+        },
+      };
+    case WorkflowsActions.LOAD_WORKFLOWS_FROM_HISTORY:
+      return {
+        ...state,
+        history: {
+          ...initialState.history,
           loading: true,
         },
       };
-    case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS:
+    case WorkflowsActions.LOAD_WORKFLOWS_FROM_HISTORY_SUCCESS:
       return {
         ...state,
         history: {
           ...state.history,
           loading: false,
           workflowFormParts: action.payload.workflowFormParts,
-          leftWorkflowHistoryData: {
-            details: action.payload.left.details,
-            sensor: action.payload.left.sensor,
-            jobs: action.payload.left.jobs,
-          },
-          rightWorkflowHistoryData: action.payload.right,
+          leftWorkflowHistoryData: action.payload.leftWorkflowHistory,
+          rightWorkflowHistoryData: action.payload.rightWorkflowHistory,
         },
       };
-    case WorkflowsActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE:
+    case WorkflowsActions.LOAD_WORKFLOWS_FROM_HISTORY_FAILURE:
       return {
         ...state,
         history: {
-          ...state.history,
+          ...initialState.history,
           loading: false,
         },
       };

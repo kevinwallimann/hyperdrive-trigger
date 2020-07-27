@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-import { SensorModel } from './sensor.model';
-import { DagDefinitionJoinedModel } from './dagDefinitionJoined.model';
 import { WorkflowJoinedModel } from './workflowJoined.model';
 
 export type HistoryModel = {

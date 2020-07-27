@@ -4,8 +4,8 @@ import { HistoryModel } from '../../../models/historyModel';
 import { Store } from '@ngrx/store';
 import { AppState, selectWorkflowState } from '../../../stores/app.reducers';
 import { ActivatedRoute } from '@angular/router';
-import { LoadWorkflowHistory } from '../../../stores/workflows/workflows.actions';
 import { absoluteRoutes } from 'src/app/constants/routes.constants';
+import {LoadHistoryForWorkflow} from "../../../stores/workflows/workflows.actions";
 
 @Component({
   selector: 'app-workflow-history',
@@ -40,7 +40,7 @@ export class WorkflowHistoryComponent implements OnInit {
   constructor(private store: Store<AppState>, route: ActivatedRoute) {
     this.paramsSubscription = route.params.subscribe((parameters) => {
       this.id = parameters.id;
-      this.store.dispatch(new LoadWorkflowHistory(parameters.id));
+      this.store.dispatch(new LoadHistoryForWorkflow(parameters.id));
     });
   }
 

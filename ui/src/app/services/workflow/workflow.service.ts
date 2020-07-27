@@ -27,7 +27,6 @@ import {
   FormPartFactory,
   PartValidationFactory,
 } from '../../models/workflowFormParts.model';
-import { HistoryModel, WorkflowHistoriesForComparisonModel } from '../../models/historyModel';
 
 @Injectable({
   providedIn: 'root',
@@ -38,23 +37,6 @@ export class WorkflowService {
   getProjects(): Observable<ProjectModel[]> {
     return this.httpClient
       .get<ProjectModel[]>(api.GET_PROJECTS, { observe: 'response' })
-      .pipe(map((_) => _.body));
-  }
-
-  getWorkflowHistory(id: number): Observable<HistoryModel[]> {
-    const params = new HttpParams().set('workflowId', id.toString());
-
-    return this.httpClient
-      .get<HistoryModel[]>(api.GET_WORKFLOW_HISTORY, { params: params, observe: 'response' })
-      .pipe(map((_) => _.body));
-  }
-
-  getWorkflowHistForComparison(left: number, right: number): Observable<WorkflowHistoriesForComparisonModel> {
-    console.log(left, right);
-    const params = new HttpParams().set('leftHistoryId', left.toString()).set('rightHistoryId', right.toString());
-
-    return this.httpClient
-      .get<WorkflowHistoriesForComparisonModel>(api.GET_WORKFLOW_HIST_FOR_COMPARISON, { params: params, observe: 'response' })
       .pipe(map((_) => _.body));
   }
 

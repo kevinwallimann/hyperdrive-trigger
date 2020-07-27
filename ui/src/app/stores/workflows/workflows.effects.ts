@@ -13,44 +13,49 @@
  * limitations under the License.
  */
 
-import { Injectable } from '@angular/core';
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import {Injectable} from '@angular/core';
+import {Actions, Effect, ofType} from '@ngrx/effects';
 import * as WorkflowActions from '../workflows/workflows.actions';
 
-import { catchError, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
-import { WorkflowService } from '../../services/workflow/workflow.service';
-import { ProjectModel } from '../../models/project.model';
-import { WorkflowJoinedModel } from '../../models/workflowJoined.model';
-import { workflowModes } from '../../models/enums/workflowModes.constants';
-import { DynamicFormParts, WorkflowFormPartsModelFactory } from '../../models/workflowFormParts.model';
-import { workflowFormParts as workflowFormPartsConsts, workflowFormPartsSequences } from '../../constants/workflowFormParts.constants';
-import { AppState, selectWorkflowState } from '../app.reducers';
-import { Store } from '@ngrx/store';
+import {catchError, mergeMap, switchMap, withLatestFrom} from 'rxjs/operators';
+import {WorkflowService} from '../../services/workflow/workflow.service';
+import {ProjectModel} from '../../models/project.model';
+import {WorkflowJoinedModel} from '../../models/workflowJoined.model';
+import {workflowModes} from '../../models/enums/workflowModes.constants';
+import {
+  DynamicFormParts, WorkflowFormPartsModel,
+  WorkflowFormPartsModelFactory
+} from '../../models/workflowFormParts.model';
+import {
+  workflowFormParts as workflowFormPartsConsts,
+  workflowFormPartsSequences
+} from '../../constants/workflowFormParts.constants';
+import {AppState, selectWorkflowState} from '../app.reducers';
+import {Store} from '@ngrx/store';
 import * as fromWorkflows from './workflows.reducers';
-import { WorkflowDataModel } from '../../models/workflowData.model';
-import set from 'lodash/set';
-import { Router } from '@angular/router';
-import { absoluteRoutes } from '../../constants/routes.constants';
-import { ToastrService } from 'ngx-toastr';
-import { texts } from '../../constants/texts.constants';
-import { WorkflowModel, WorkflowModelFactory } from '../../models/workflow.model';
-import { WorkflowRequestModel } from '../../models/workflowRequest.model';
-import { ApiErrorModel } from '../../models/errors/apiError.model';
-import { WorkflowHistoriesForComparisonModel, HistoryModel } from '../../models/historyModel';
-import { WorkflowEntryModel } from '../../models/workflowEntry.model';
-import { JobEntryModel } from '../../models/jobEntry.model';
+import {WorkflowDataModel} from '../../models/workflowData.model';
+import {Router} from '@angular/router';
+import {absoluteRoutes} from '../../constants/routes.constants';
+import {ToastrService} from 'ngx-toastr';
+import {texts} from '../../constants/texts.constants';
+import {WorkflowModel, WorkflowModelFactory} from '../../models/workflow.model';
+import {WorkflowRequestModel} from '../../models/workflowRequest.model';
+import {WorkflowHistoriesForComparisonModel, HistoryModel} from '../../models/historyModel';
+import {WorkflowHistoryService} from "../../services/workflowHistory/workflow-history.service";
 
 @Injectable()
 export class WorkflowsEffects {
   constructor(
     private actions: Actions,
     private workflowService: WorkflowService,
+    private workflowHistoryService: WorkflowHistoryService,
     private store: Store<AppState>,
     private router: Router,
     private toastrService: ToastrService,
-  ) {}
+  ) {
+  }
 
-  @Effect({ dispatch: true })
+  @Effect({dispatch: true})
   workflowsInitialize = this.actions.pipe(
     ofType(WorkflowActions.INITIALIZE_WORKFLOWS),
     switchMap((action: WorkflowActions.InitializeWorkflows) => {
@@ -59,13 +64,7 @@ export class WorkflowsEffects {
     mergeMap((projects: ProjectModel[]) => {
       return this.workflowService.getWorkflowDynamicFormParts().pipe(
         mergeMap((workflowComponents: DynamicFormParts) => {
-          const workflowFormParts = WorkflowFormPartsModelFactory.create(
-            workflowFormPartsSequences.allDetails,
-            workflowFormPartsConsts.SENSOR.SENSOR_TYPE,
-            workflowFormPartsConsts.JOB.JOB_NAME,
-            workflowFormPartsConsts.JOB.JOB_TYPE,
-            workflowComponents,
-          );
+          const workflowFormParts = this.getWorkflowFormParts(workflowComponents)
           return [
             {
               type: WorkflowActions.INITIALIZE_WORKFLOWS_SUCCESS,
@@ -87,7 +86,7 @@ export class WorkflowsEffects {
     }),
   );
 
-  @Effect({ dispatch: true })
+  @Effect({dispatch: true})
   workflowInitializationStart = this.actions.pipe(
     ofType(WorkflowActions.START_WORKFLOW_INITIALIZATION),
     withLatestFrom(this.store.select(selectWorkflowState)),
@@ -135,7 +134,7 @@ export class WorkflowsEffects {
     }),
   );
 
-  @Effect({ dispatch: true })
+  @Effect({dispatch: true})
   workflowDelete = this.actions.pipe(
     ofType(WorkflowActions.DELETE_WORKFLOW),
     switchMap((action: WorkflowActions.DeleteWorkflow) => {
@@ -171,7 +170,7 @@ export class WorkflowsEffects {
     }),
   );
 
-  @Effect({ dispatch: true })
+  @Effect({dispatch: true})
   workflowActiveStateSwitch = this.actions.pipe(
     ofType(WorkflowActions.SWITCH_WORKFLOW_ACTIVE_STATE),
     switchMap((action: WorkflowActions.SwitchWorkflowActiveState) => {
@@ -206,7 +205,7 @@ export class WorkflowsEffects {
     }),
   );
 
-  @Effect({ dispatch: true })
+  @Effect({dispatch: true})
   workflowRun = this.actions.pipe(
     ofType(WorkflowActions.RUN_WORKFLOW),
     switchMap((action: WorkflowActions.RunWorkflow) => {
@@ -214,21 +213,21 @@ export class WorkflowsEffects {
         mergeMap((runWorkflowSuccess) => {
           if (runWorkflowSuccess) {
             this.toastrService.success(texts.RUN_WORKFLOW_SUCCESS_NOTIFICATION);
-            return [{ type: WorkflowActions.RUN_WORKFLOW_SUCCESS }];
+            return [{type: WorkflowActions.RUN_WORKFLOW_SUCCESS}];
           } else {
             this.toastrService.error(texts.RUN_WORKFLOW_FAILURE_NOTIFICATION);
-            return [{ type: WorkflowActions.RUN_WORKFLOW_FAILURE }];
+            return [{type: WorkflowActions.RUN_WORKFLOW_FAILURE}];
           }
         }),
         catchError(() => {
           this.toastrService.error(texts.RUN_WORKFLOW_FAILURE_NOTIFICATION);
-          return [{ type: WorkflowActions.RUN_WORKFLOW_FAILURE }];
+          return [{type: WorkflowActions.RUN_WORKFLOW_FAILURE}];
         }),
       );
     }),
   );
 
-  @Effect({ dispatch: true })
+  @Effect({dispatch: true})
   workflowCreate = this.actions.pipe(
     ofType(WorkflowActions.CREATE_WORKFLOW),
     withLatestFrom(this.store.select(selectWorkflowState)),
@@ -281,7 +280,7 @@ export class WorkflowsEffects {
     }),
   );
 
-  @Effect({ dispatch: true })
+  @Effect({dispatch: true})
   workflowUpdate = this.actions.pipe(
     ofType(WorkflowActions.UPDATE_WORKFLOW),
     withLatestFrom(this.store.select(selectWorkflowState)),
@@ -334,18 +333,25 @@ export class WorkflowsEffects {
     }),
   );
 
-  @Effect({ dispatch: true })
-  workflowHistoryLoad = this.actions.pipe(
-    ofType(WorkflowActions.LOAD_WORKFLOW_HISTORY),
-    withLatestFrom(this.store.select(selectWorkflowState)),
-    switchMap(([action, state]: [WorkflowActions.LoadWorkflowHistory, fromWorkflows.State]) => {
-      return this.workflowService.getWorkflowHistory(action.payload).pipe(
-        mergeMap((result: HistoryModel[]) => {
-          // this.toastrService.success(texts.UPDATE_WORKFLOW_SUCCESS_NOTIFICATION);
+  @Effect({dispatch: true})
+  historyForWorkflowLoad = this.actions.pipe(
+    ofType(WorkflowActions.LOAD_HISTORY_FOR_WORKFLOW),
+    switchMap((action: WorkflowActions.LoadHistoryForWorkflow) => {
+      return this.workflowHistoryService.getHistoryForWorkflow(action.payload).pipe(
+        mergeMap((historyForWorkflow: HistoryModel[]) => {
+          this.toastrService.success(texts.LOAD_HISTORY_FOR_WORKFLOW_SUCCESS_NOTIFICATION);
           return [
             {
-              type: WorkflowActions.LOAD_WORKFLOW_HISTORY_SUCCESS,
-              payload: result,
+              type: WorkflowActions.LOAD_HISTORY_FOR_WORKFLOW_SUCCESS,
+              payload: historyForWorkflow,
+            },
+          ];
+        }),
+        catchError(() => {
+          this.toastrService.error(texts.LOAD_HISTORY_FOR_WORKFLOW_FAILURE_NOTIFICATION);
+          return [
+            {
+              type: WorkflowActions.LOAD_HISTORY_FOR_WORKFLOW_FAILURE
             },
           ];
         }),
@@ -353,47 +359,58 @@ export class WorkflowsEffects {
     }),
   );
 
-  @Effect({ dispatch: true })
-  workflowHistForComparisonLoad = this.actions.pipe(
-    ofType(WorkflowActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON),
-    switchMap((action: WorkflowActions.LoadWorkflowsHistForComparison) => {
-      return this.workflowService.getWorkflowHistForComparison(action.payload.left, action.payload.right);
+  @Effect({dispatch: true})
+  workflowsFromHistoryLoad = this.actions.pipe(
+    ofType(WorkflowActions.LOAD_WORKFLOWS_FROM_HISTORY),
+    switchMap((action: WorkflowActions.LoadWorkflowsFromHistory) => {
+      return this.workflowHistoryService.getWorkflowsFromHistory(
+        action.payload.leftWorkflowHistoryId,
+        action.payload.rightWorkflowHistoryId
+      );
     }),
     mergeMap((workflowHistForComparison: WorkflowHistoriesForComparisonModel) => {
-      console.log('asdasd');
       return this.workflowService.getWorkflowDynamicFormParts().pipe(
         mergeMap((workflowComponents: DynamicFormParts) => {
-          const workflowFormParts = WorkflowFormPartsModelFactory.create(
-            workflowFormPartsSequences.allDetails,
-            workflowFormPartsConsts.SENSOR.SENSOR_TYPE,
-            workflowFormPartsConsts.JOB.JOB_NAME,
-            workflowFormPartsConsts.JOB.JOB_TYPE,
-            workflowComponents,
-          );
-          const left = new WorkflowDataModel(workflowHistForComparison.leftWorkflowHistory.workflow, workflowFormParts.dynamicParts);
-          const right = new WorkflowDataModel(workflowHistForComparison.rightWorkflowHistory.workflow, workflowFormParts.dynamicParts);
-          console.log('workflowFormParts', workflowFormParts);
+          const workflowFormParts = this.getWorkflowFormParts(workflowComponents)
+
+          const leftWorkflowHistory =
+            new WorkflowDataModel(workflowHistForComparison.leftWorkflowHistory.workflow, workflowFormParts.dynamicParts);
+          const rightWorkflowHistory =
+            new WorkflowDataModel(workflowHistForComparison.rightWorkflowHistory.workflow, workflowFormParts.dynamicParts);
+
+          this.toastrService.success(texts.LOAD_WORKFLOWS_FROM_HISTORY_SUCCESS_NOTIFICATION);
           return [
             {
-              type: WorkflowActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_SUCCESS,
+              type: WorkflowActions.LOAD_WORKFLOWS_FROM_HISTORY_SUCCESS,
               payload: {
                 workflowFormParts: workflowFormParts,
-                left: left.getWorkflowFromData(),
-                right: right.getWorkflowFromData(),
+                leftWorkflowHistory: leftWorkflowHistory.getWorkflowFromData(),
+                rightWorkflowHistory: rightWorkflowHistory.getWorkflowFromData(),
               },
             },
           ];
         }),
         catchError(() => {
+          this.toastrService.success(texts.LOAD_WORKFLOWS_FROM_HISTORY_FAILURE_NOTIFICATION);
           return [
             {
-              type: WorkflowActions.LOAD_WORKFLOW_HISTORIES_FOR_COMPARISON_FAILURE,
+              type: WorkflowActions.LOAD_WORKFLOWS_FROM_HISTORY_FAILURE,
             },
           ];
         }),
       );
     }),
   );
+
+  getWorkflowFormParts(workflowComponents: DynamicFormParts): WorkflowFormPartsModel {
+    return WorkflowFormPartsModelFactory.create(
+      workflowFormPartsSequences.allDetails,
+      workflowFormPartsConsts.SENSOR.SENSOR_TYPE,
+      workflowFormPartsConsts.JOB.JOB_NAME,
+      workflowFormPartsConsts.JOB.JOB_TYPE,
+      workflowComponents,
+    );
+  }
 
   isBackendValidationError(errorResponse: any): boolean {
     return (
