@@ -17,8 +17,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
 import { delay, distinctUntilChanged } from 'rxjs/operators';
-import { Action, Store } from '@ngrx/store';
-import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
+import { Action } from '@ngrx/store';
 import { WorkflowDetailsChanged } from '../../../../stores/workflows/workflows.actions';
 import { FormPart } from '../../../../models/workflowFormParts.model';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../models/workflowEntry.model';
@@ -32,13 +31,12 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
   @Input() mode: string;
   @Input() parts: FormPart[];
   @Input() data: WorkflowEntryModel[];
+  @Input() changes: Subject<Action>;
 
   workflowModes = workflowModes;
 
   detailsChanges: Subject<WorkflowEntryModel> = new Subject<WorkflowEntryModel>();
   detailsChangesSubscription: Subscription;
-
-  @Input() changes: Subject<Action>;
 
   constructor() {
     // do nothing

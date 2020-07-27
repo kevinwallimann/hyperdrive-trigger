@@ -13,16 +13,13 @@
  * limitations under the License.
  */
 
-import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
-import cloneDeep from 'lodash/cloneDeep';
-import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
-import { Action, Store } from '@ngrx/store';
-import { FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
+import { Action } from '@ngrx/store';
+import { WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
 import { WorkflowAddEmptyJob, WorkflowRemoveJob } from '../../../../stores/workflows/workflows.actions';
 import { JobEntryModel } from '../../../../models/jobEntry.model';
-import { WorkflowEntryModel } from '../../../../models/workflowEntry.model';
 
 @Component({
   selector: 'app-jobs',

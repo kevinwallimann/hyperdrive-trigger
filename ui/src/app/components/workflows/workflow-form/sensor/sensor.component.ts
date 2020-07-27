@@ -16,10 +16,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
-import { Action, Store } from '@ngrx/store';
-import { AppState, selectWorkflowState } from '../../../../stores/app.reducers';
+import { Action } from '@ngrx/store';
 import { WorkflowSensorChanged, WorkflowSensorTypeSwitched } from '../../../../stores/workflows/workflows.actions';
-import { DynamicFormPart, FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
+import { FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../models/workflowEntry.model';
 import { delay } from 'rxjs/operators';
 

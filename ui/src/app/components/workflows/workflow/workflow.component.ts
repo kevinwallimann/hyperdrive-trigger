@@ -13,26 +13,16 @@
  * limitations under the License.
  */
 
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppState, selectWorkflowState } from '../../../stores/app.reducers';
 import { Subject, Subscription } from 'rxjs';
 import { Action, Store } from '@ngrx/store';
-import {
-  DeleteWorkflow,
-  CreateWorkflow,
-  StartWorkflowInitialization,
-  UpdateWorkflow,
-  RunWorkflow,
-  SwitchWorkflowActiveState,
-  RemoveBackendValidationError,
-} from '../../../stores/workflows/workflows.actions';
+import { StartWorkflowInitialization } from '../../../stores/workflows/workflows.actions';
 import { workflowModes } from '../../../models/enums/workflowModes.constants';
 import { absoluteRoutes } from '../../../constants/routes.constants';
 import { PreviousRouteService } from '../../../services/previousRoute/previous-route.service';
 import { ConfirmationDialogService } from '../../../services/confirmation-dialog/confirmation-dialog.service';
-import { ConfirmationDialogTypes } from '../../../constants/confirmationDialogTypes.constants';
-import { texts } from '../../../constants/texts.constants';
 import { WorkflowEntryModel } from '../../../models/workflowEntry.model';
 import { JobEntryModel } from '../../../models/jobEntry.model';
 import { WorkflowFormPartsModel } from '../../../models/workflowFormParts.model';
@@ -88,7 +78,6 @@ export class WorkflowComponent implements OnInit, OnDestroy {
       this.isWorkflowActive = !!state.workflowAction.workflow ? state.workflowAction.workflow.isActive : false;
       this.backendValidationErrors = state.workflowAction.backendValidationErrors;
       this.workflowFormParts = state.workflowAction.workflowFormParts;
-      console.log('asdasdloading', this.workflowFormParts);
       this.workflowData = state.workflowAction.workflowFormData;
     });
     this.changesSubscription = this.changes.subscribe((state) => {
