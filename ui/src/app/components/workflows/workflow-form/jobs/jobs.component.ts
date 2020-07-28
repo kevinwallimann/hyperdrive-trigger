@@ -60,7 +60,6 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
   }
 
   toggleJob(jobId: string): void {
-    ////////////////////////////////////////////////////////////////////////
     if (this.hiddenJobs.has(jobId)) {
       this.hiddenJobs.delete(jobId);
     } else {
@@ -69,22 +68,18 @@ export class JobsComponent implements OnDestroy, OnInit, AfterViewChecked {
   }
 
   isJobHidden(jobId: string): boolean {
-    ////////////////////////////////////////////////////////////////////////
     return this.hiddenJobs.has(jobId);
   }
 
   addJob() {
-    ////////////////////////////////////////////////////////////////////////
     this.changes.next(new WorkflowAddEmptyJob(this.jobsData.length));
   }
 
   removeJob(jobId: string): void {
-    ////////////////////////////////////////////////////////////////////////
     this.changes.next(new WorkflowRemoveJob(jobId));
   }
 
   getJobName(jobId: string) {
-    ////////////////////////////////////////////////////////////////////////
     const jobDataOption = this.jobsData.find((job) => job.jobId === jobId);
     const jobData = !!jobDataOption ? jobDataOption.entries : [];
 

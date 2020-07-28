@@ -64,7 +64,7 @@ describe('JobComponent', () => {
   const jobsData = [
     JobEntryModelFactory.createWithUuid(0, [
       WorkflowEntryModelFactory.create('jobStaticPart', 'value'),
-      WorkflowEntryModelFactory.create('switchPartProp', 'value'),
+      WorkflowEntryModelFactory.create('switchPartProp', 'optionTwo'),
     ]),
   ];
   const mode = 'mode';
@@ -145,16 +145,15 @@ describe('JobComponent', () => {
     });
   }));
 
-  // it('getSelectedJobComponent() should return dynamic parts when sensor is selected', async(() => {
-  //   fixture.detectChanges();
-  //   fixture.whenStable().then(() => {
-  //     // underTest.selectedJob = workflowFormParts.dynamicParts.jobDynamicParts[1].name;
-  //     const resultLeft = underTest.getSelectedJobComponent();
-  //     const resultRight = workflowFormParts.dynamicParts.jobDynamicParts[0].parts;
-  //
-  //     expect(resultLeft).toEqual(resultRight);
-  //   });
-  // }));
+  it('getSelectedJobComponent() should return dynamic parts when sensor is selected', async(() => {
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      const resultLeft = underTest.getSelectedJobComponent();
+      const resultRight = workflowFormParts.dynamicParts.jobDynamicParts[1].parts;
+
+      expect(resultLeft).toEqual(resultRight);
+    });
+  }));
 
   it('getJobData() should return return job data', async(() => {
     fixture.detectChanges();
