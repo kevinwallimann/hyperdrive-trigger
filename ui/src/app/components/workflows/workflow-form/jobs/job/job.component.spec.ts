@@ -29,7 +29,7 @@ import { JobEntryModelFactory } from '../../../../../models/jobEntry.model';
 import { WorkflowEntryModelFactory } from '../../../../../models/workflowEntry.model';
 import { Subject } from 'rxjs';
 import { Action } from '@ngrx/store';
-import {WorkflowJobChanged, WorkflowJobTypeSwitched} from "../../../../../stores/workflows/workflows.actions";
+import { WorkflowJobChanged, WorkflowJobTypeSwitched } from '../../../../../stores/workflows/workflows.actions';
 
 describe('JobComponent', () => {
   let fixture: ComponentFixture<JobComponent>;
@@ -104,7 +104,7 @@ describe('JobComponent', () => {
     fixture.whenStable().then(() => {
       expect(changesSpy).toHaveBeenCalled();
       expect(changesSpy).toHaveBeenCalledWith(
-        new WorkflowJobChanged({ jobId: jobId, jobEntry: WorkflowEntryModelFactory.create(property, value) })
+        new WorkflowJobChanged({ jobId: jobId, jobEntry: WorkflowEntryModelFactory.create(property, value) }),
       );
     });
   }));
@@ -121,7 +121,7 @@ describe('JobComponent', () => {
     fixture.whenStable().then(() => {
       expect(changesSpy).toHaveBeenCalled();
       expect(changesSpy).toHaveBeenCalledWith(
-        new WorkflowJobTypeSwitched({ jobId: jobId, jobEntry: WorkflowEntryModelFactory.create(property, value) })
+        new WorkflowJobTypeSwitched({ jobId: jobId, jobEntry: WorkflowEntryModelFactory.create(property, value) }),
       );
     });
   }));

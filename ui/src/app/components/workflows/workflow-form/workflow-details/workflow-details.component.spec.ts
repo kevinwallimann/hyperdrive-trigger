@@ -16,19 +16,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkflowDetailsComponent } from './workflow-details.component';
-import {WorkflowEntryModelFactory} from "../../../../models/workflowEntry.model";
-import {WorkflowDetailsChanged} from "../../../../stores/workflows/workflows.actions";
-import {Subject} from "rxjs";
-import {Action} from "@ngrx/store";
+import { WorkflowEntryModelFactory } from '../../../../models/workflowEntry.model';
+import { WorkflowDetailsChanged } from '../../../../stores/workflows/workflows.actions';
+import { Subject } from 'rxjs';
+import { Action } from '@ngrx/store';
 
 describe('WorkflowDetailsComponent', () => {
   let fixture: ComponentFixture<WorkflowDetailsComponent>;
   let underTest: WorkflowDetailsComponent;
 
   const sensorData = [
-      { property: 'propertyOne', value: 'valueOne' },
-      { property: 'propertyTwo', value: 'valueTwo' }
-    ];
+    { property: 'propertyOne', value: 'valueOne' },
+    { property: 'propertyTwo', value: 'valueTwo' },
+  ];
   const parts = [];
 
   beforeEach(async(() => {

@@ -25,8 +25,8 @@ import { ConfirmationDialogService } from '../../../services/confirmation-dialog
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../stores/app.reducers';
 import { StartWorkflowInitialization } from '../../../stores/workflows/workflows.actions';
-import {DynamicFormPartsFactory, WorkflowFormPartsModelFactory} from "../../../models/workflowFormParts.model";
-import {workflowFormParts, workflowFormPartsSequences} from "../../../constants/workflowFormParts.constants";
+import { DynamicFormPartsFactory, WorkflowFormPartsModelFactory } from '../../../models/workflowFormParts.model';
+import { workflowFormParts, workflowFormPartsSequences } from '../../../constants/workflowFormParts.constants';
 
 describe('WorkflowComponent', () => {
   let underTest: WorkflowComponent;
@@ -110,7 +110,7 @@ describe('WorkflowComponent', () => {
   }));
 
   it('when changes is dispatched from child component it should propagate action to store', async(() => {
-    const usedAction = new StartWorkflowInitialization({id: 1, mode: 'mode'});
+    const usedAction = new StartWorkflowInitialization({ id: 1, mode: 'mode' });
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       const storeSpy = spyOn(store, 'dispatch');
@@ -123,5 +123,4 @@ describe('WorkflowComponent', () => {
       });
     });
   }));
-
 });

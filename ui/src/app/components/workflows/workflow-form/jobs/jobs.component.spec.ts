@@ -22,16 +22,14 @@ import { WorkflowAddEmptyJob, WorkflowRemoveJob } from '../../../../stores/workf
 import { JobEntryModelFactory } from '../../../../models/jobEntry.model';
 import { WorkflowEntryModelFactory } from '../../../../models/workflowEntry.model';
 import { EventEmitter } from '@angular/core';
-import {Subject} from "rxjs";
+import { Subject } from 'rxjs';
 
 describe('JobsComponent', () => {
   let fixture: ComponentFixture<JobsComponent>;
   let underTest: JobsComponent;
 
   const uuid = '7a03f745-6b41-4161-9b57-765ac8f58574';
-  const jobsData = [
-    JobEntryModelFactory.create(uuid, 0, [WorkflowEntryModelFactory.create('jobStaticPart', 'value')])
-  ];
+  const jobsData = [JobEntryModelFactory.create(uuid, 0, [WorkflowEntryModelFactory.create('jobStaticPart', 'value')])];
   const workflowFormParts = WorkflowFormPartsModelFactory.create(
     [],
     undefined,

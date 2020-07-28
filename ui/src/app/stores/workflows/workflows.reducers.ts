@@ -20,7 +20,7 @@ import { WorkflowFormPartsModel } from '../../models/workflowFormParts.model';
 import { JobEntryModel, JobEntryModelFactory } from '../../models/jobEntry.model';
 import { SortAttributesModel } from '../../models/search/sortAttributes.model';
 import { WorkflowFormDataModel } from '../../models/workflowFormData.model';
-import {HistoryModel} from "../../models/historyModel";
+import { HistoryModel } from '../../models/historyModel';
 
 export interface State {
   projects: ProjectModel[];
@@ -72,7 +72,7 @@ const initialState: State = {
     leftWorkflowHistoryData: undefined,
     leftWorkflowHistory: undefined,
     rightWorkflowHistoryData: undefined,
-    rightWorkflowHistory: undefined
+    rightWorkflowHistory: undefined,
   },
 };
 

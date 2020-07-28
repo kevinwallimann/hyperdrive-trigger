@@ -8,8 +8,8 @@ import { WorkflowEntryModel } from '../../../../models/workflowEntry.model';
 import { WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
 import { JobEntryModel } from '../../../../models/jobEntry.model';
 import { LoadWorkflowsFromHistory } from '../../../../stores/workflows/workflows.actions';
-import {WorkflowFormDataModel} from "../../../../models/workflowFormData.model";
-import {HistoryModel} from "../../../../models/historyModel";
+import { WorkflowFormDataModel } from '../../../../models/workflowFormData.model';
+import { HistoryModel } from '../../../../models/historyModel';
 
 @Component({
   selector: 'app-workflow-comparison',

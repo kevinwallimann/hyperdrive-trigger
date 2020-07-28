@@ -1,8 +1,8 @@
-import {Component, Input} from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PartValidation, PartValidationFactory } from '../../../../../models/workflowFormParts.model';
 import { Subject } from 'rxjs';
 import { WorkflowEntryModel } from '../../../../../models/workflowEntry.model';
-import {HistoryModel} from "../../../../../models/historyModel";
+import { HistoryModel } from '../../../../../models/historyModel';
 
 @Component({
   selector: 'app-history-detail',
