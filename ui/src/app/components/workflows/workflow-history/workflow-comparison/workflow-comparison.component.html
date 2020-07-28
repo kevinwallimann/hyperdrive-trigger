@@ -7,7 +7,7 @@
 <div class="content-area asd" *ngIf="!loading">
   <div class="clr-row">
     <div class="clr-col">
-      <app-history-detail></app-history-detail>
+      <app-history-detail [historyDetail]="workflowHistoryLeft"></app-history-detail>
       <app-workflow-form
         [mode]="workflowModes.COMPARISON"
         [workflowFormParts]="workflowFormParts"
@@ -19,7 +19,7 @@
 
     </div>
     <div class="clr-col">
-      <app-history-detail></app-history-detail>
+      <app-history-detail [historyDetail]="workflowHistoryRight"></app-history-detail>
       <app-workflow-form
         [mode]="workflowModes.COMPARISON"
         [workflowFormParts]="workflowFormParts"

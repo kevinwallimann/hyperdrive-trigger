@@ -378,8 +378,10 @@ export class WorkflowsEffects {
               type: WorkflowActions.LOAD_WORKFLOWS_FROM_HISTORY_SUCCESS,
               payload: {
                 workflowFormParts: workflowFormParts,
-                leftWorkflowHistory: leftWorkflowHistory.getWorkflowFromData(),
-                rightWorkflowHistory: rightWorkflowHistory.getWorkflowFromData(),
+                leftWorkflowHistoryData: leftWorkflowHistory.getWorkflowFromData(),
+                leftWorkflowHistory: workflowHistForComparison.leftWorkflowHistory.history,
+                rightWorkflowHistoryData: rightWorkflowHistory.getWorkflowFromData(),
+                rightWorkflowHistory: workflowHistForComparison.rightWorkflowHistory.history,
               },
             },
           ];

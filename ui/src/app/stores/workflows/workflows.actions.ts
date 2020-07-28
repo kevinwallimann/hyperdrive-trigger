@@ -266,8 +266,10 @@ export class LoadWorkflowsFromHistorySuccess implements Action {
   constructor(
     public payload: {
       workflowFormParts: WorkflowFormPartsModel;
-      leftWorkflowHistory: WorkflowFormDataModel;
-      rightWorkflowHistory: WorkflowFormDataModel;
+      leftWorkflowHistoryData: WorkflowFormDataModel;
+      leftWorkflowHistory: HistoryModel;
+      rightWorkflowHistoryData: WorkflowFormDataModel;
+      rightWorkflowHistory: HistoryModel;
     },
   ) {}
 }

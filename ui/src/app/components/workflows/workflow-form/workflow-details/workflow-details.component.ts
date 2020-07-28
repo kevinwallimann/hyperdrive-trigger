@@ -16,7 +16,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { workflowModes } from '../../../../models/enums/workflowModes.constants';
 import { Subject, Subscription } from 'rxjs';
-import { delay, distinctUntilChanged } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { WorkflowDetailsChanged } from '../../../../stores/workflows/workflows.actions';
 import { FormPart } from '../../../../models/workflowFormParts.model';
@@ -43,7 +42,7 @@ export class WorkflowDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.detailsChangesSubscription = this.detailsChanges.pipe(distinctUntilChanged(), delay(0)).subscribe((newValue) => {
+    this.detailsChangesSubscription = this.detailsChanges.subscribe((newValue) => {
       this.changes.next(new WorkflowDetailsChanged(WorkflowEntryModelFactory.create(newValue.property, newValue.value)));
     });
   }

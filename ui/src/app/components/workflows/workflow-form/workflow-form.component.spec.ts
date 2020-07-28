@@ -22,19 +22,20 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PreviousRouteService } from '../../../services/previousRoute/previous-route.service';
 import { absoluteRoutes } from '../../../constants/routes.constants';
 import { ConfirmationDialogService } from '../../../services/confirmation-dialog/confirmation-dialog.service';
-import {Action, Store} from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { AppState } from '../../../stores/app.reducers';
 import {
   CreateWorkflow,
-  DeleteWorkflow, RemoveBackendValidationError,
+  DeleteWorkflow,
+  RemoveBackendValidationError,
   RunWorkflow,
   SwitchWorkflowActiveState,
   UpdateWorkflow,
 } from '../../../stores/workflows/workflows.actions';
-import {WorkflowFormComponent} from "./workflow-form.component";
-import {JobEntryModelFactory} from "../../../models/jobEntry.model";
-import {WorkflowFormPartsModelFactory} from "../../../models/workflowFormParts.model";
-import {FormsModule} from "@angular/forms";
+import { WorkflowFormComponent } from './workflow-form.component';
+import { JobEntryModelFactory } from '../../../models/jobEntry.model';
+import { WorkflowFormPartsModelFactory } from '../../../models/workflowFormParts.model';
+import { FormsModule } from '@angular/forms';
 
 describe('WorkflowComponent', () => {
   let underTest: WorkflowFormComponent;
@@ -59,11 +60,7 @@ describe('WorkflowComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ConfirmationDialogService,
-        provideMockStore({ initialState: initialAppState }),
-        PreviousRouteService,
-      ],
+      providers: [ConfirmationDialogService, provideMockStore({ initialState: initialAppState }), PreviousRouteService],
       imports: [RouterTestingModule.withRoutes([]), FormsModule],
       declarations: [WorkflowFormComponent],
     }).compileComponents();
@@ -80,11 +77,9 @@ describe('WorkflowComponent', () => {
     underTest.workflowData = {
       details: [],
       sensor: [],
-      jobs: []
+      jobs: [],
     };
-    underTest.workflowFormParts = WorkflowFormPartsModelFactory.create(
-      undefined, undefined, undefined, undefined, undefined
-    );
+    underTest.workflowFormParts = WorkflowFormPartsModelFactory.create(undefined, undefined, undefined, undefined, undefined);
     underTest.id = 10;
     underTest.mode = 'Show';
     underTest.backendValidationErrors = [];
@@ -347,18 +342,17 @@ describe('WorkflowComponent', () => {
     });
   }));
 
-  it('getJobsData() should return jobs data ordered by order number' , async(() => {
+  it('getJobsData() should return jobs data ordered by order number', async(() => {
     const jobOne = JobEntryModelFactory.create('1', 1, undefined);
     const jobTwo = JobEntryModelFactory.create('2', 2, undefined);
 
     underTest.workflowData = {
       details: [],
       sensor: [],
-      jobs: [ jobTwo, jobOne ]
-    }
+      jobs: [jobTwo, jobOne],
+    };
 
     const jobsData = underTest.getJobsData();
-    expect(jobsData).toEqual([ jobOne, jobTwo ]);
+    expect(jobsData).toEqual([jobOne, jobTwo]);
   }));
-
 });

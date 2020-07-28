@@ -20,7 +20,6 @@ import { Action } from '@ngrx/store';
 import { WorkflowSensorChanged, WorkflowSensorTypeSwitched } from '../../../../stores/workflows/workflows.actions';
 import { FormPart, WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../models/workflowEntry.model';
-import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sensor',
@@ -43,7 +42,7 @@ export class SensorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.sensorChangesSubscription = this.sensorChanges.pipe(delay(0)).subscribe((sensorChange) => {
+    this.sensorChangesSubscription = this.sensorChanges.subscribe((sensorChange) => {
       if (sensorChange.property == this.workflowFormParts.sensorSwitchPart.property) {
         this.changes.next(new WorkflowSensorTypeSwitched(WorkflowEntryModelFactory.create(sensorChange.property, sensorChange.value)));
       } else {

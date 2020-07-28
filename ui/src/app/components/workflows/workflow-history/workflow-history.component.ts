@@ -26,17 +26,6 @@ export class WorkflowHistoryComponent implements OnInit {
   left: number = undefined;
   right: number = undefined;
 
-  isSelectable(zzz): boolean {
-    const leng = this.selected.length == 2;
-    const cont = this.selected.some((xxx) => xxx === zzz);
-    const result = leng && !cont;
-    return !result;
-  }
-
-  selectionChanged(event) {
-    console.log(this.selected);
-  }
-
   constructor(private store: Store<AppState>, route: ActivatedRoute) {
     this.paramsSubscription = route.params.subscribe((parameters) => {
       this.id = parameters.id;
@@ -49,5 +38,12 @@ export class WorkflowHistoryComponent implements OnInit {
       this.loading = state.history.loading;
       this.workflowHistory = state.history.workflowHistory;
     });
+  }
+
+  isSelectable(inputHistory: HistoryModel): boolean {
+    const areTwoSelected = this.selected.length == 2;
+    const isAlreadySelected = this.selected.some((history: HistoryModel) => history === inputHistory);
+    const result = areTwoSelected && !isAlreadySelected;
+    return !result;
   }
 }

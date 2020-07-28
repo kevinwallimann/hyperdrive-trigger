@@ -28,8 +28,8 @@
               [isShow]="true"
               [name]="'Operation'"
               [valueChanges]="detailsChanges"
-              [value]="'Update'"
-                [property]="'prop'"
+              [value]="historyDetail.operation.name"
+              [property]="'operation'"
               [partValidation]="partValidation">
             </app-string-part>
 
@@ -37,8 +37,8 @@
               [isShow]="true"
               [name]="'Change By'"
               [valueChanges]="detailsChanges"
-              [value]="'hyperdriver-user'"
-              [property]="'prop'"
+              [value]="historyDetail.changedBy"
+              [property]="'user'"
               [partValidation]="partValidation">
             </app-string-part>
 
@@ -46,8 +46,8 @@
               [isShow]="true"
               [name]="'Changed on'"
               [valueChanges]="detailsChanges"
-              [value]="'22-07-2020'"
-              [property]="'prop'"
+              [value]="historyDetail.changedOn | date: 'medium'"
+              [property]="'date'"
               [partValidation]="partValidation">
             </app-string-part>
           </div>

@@ -20,7 +20,6 @@ import { FormPart, WorkflowFormPartsModel } from '../../../../../models/workflow
 import { Action } from '@ngrx/store';
 import { WorkflowJobChanged, WorkflowJobTypeSwitched } from '../../../../../stores/workflows/workflows.actions';
 import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../../../../models/workflowEntry.model';
-import { delay } from 'rxjs/operators';
 import { JobEntryModel } from '../../../../../models/jobEntry.model';
 
 @Component({
@@ -45,7 +44,7 @@ export class JobComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.jobChangesSubscription = this.jobChanges.pipe(delay(0)).subscribe((jobChange) => {
+    this.jobChangesSubscription = this.jobChanges.subscribe((jobChange) => {
       if (jobChange.property == this.workflowFormParts.jobSwitchPart.property) {
         this.changes.next(
           new WorkflowJobTypeSwitched({

@@ -73,7 +73,9 @@ describe('WorkflowsReducers', () => {
       workflowHistory: [],
       workflowFormParts: undefined,
       leftWorkflowHistoryData: undefined,
+      leftWorkflowHistory: undefined,
       rightWorkflowHistoryData: undefined,
+      rightWorkflowHistory: undefined
     },
   };
 

@@ -8,6 +8,8 @@ import { WorkflowEntryModel } from '../../../../models/workflowEntry.model';
 import { WorkflowFormPartsModel } from '../../../../models/workflowFormParts.model';
 import { JobEntryModel } from '../../../../models/jobEntry.model';
 import { LoadWorkflowsFromHistory } from '../../../../stores/workflows/workflows.actions';
+import {WorkflowFormDataModel} from "../../../../models/workflowFormData.model";
+import {HistoryModel} from "../../../../models/historyModel";
 
 @Component({
   selector: 'app-workflow-comparison',
@@ -20,16 +22,10 @@ export class WorkflowComparisonComponent implements OnInit, OnDestroy {
 
   workflowModes = workflowModes;
 
-  workflowDataLeft: {
-    details: WorkflowEntryModel[];
-    sensor: WorkflowEntryModel[];
-    jobs: JobEntryModel[];
-  };
-  workflowDataRight: {
-    details: WorkflowEntryModel[];
-    sensor: WorkflowEntryModel[];
-    jobs: JobEntryModel[];
-  };
+  workflowDataLeft: WorkflowFormDataModel;
+  workflowDataRight: WorkflowFormDataModel;
+  workflowHistoryLeft: HistoryModel;
+  workflowHistoryRight: HistoryModel;
   workflowFormParts: WorkflowFormPartsModel;
 
   loading = true;
@@ -51,6 +47,8 @@ export class WorkflowComparisonComponent implements OnInit, OnDestroy {
       this.workflowFormParts = state.history.workflowFormParts;
       this.workflowDataLeft = state.history.leftWorkflowHistoryData;
       this.workflowDataRight = state.history.rightWorkflowHistoryData;
+      this.workflowHistoryLeft = state.history.leftWorkflowHistory;
+      this.workflowHistoryRight = state.history.rightWorkflowHistory;
       this.loading = state.history.loading;
     });
   }

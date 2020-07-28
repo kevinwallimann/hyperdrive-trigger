@@ -20,6 +20,7 @@ import { WorkflowFormPartsModel } from '../../models/workflowFormParts.model';
 import { JobEntryModel, JobEntryModelFactory } from '../../models/jobEntry.model';
 import { SortAttributesModel } from '../../models/search/sortAttributes.model';
 import { WorkflowFormDataModel } from '../../models/workflowFormData.model';
+import {HistoryModel} from "../../models/historyModel";
 
 export interface State {
   projects: ProjectModel[];
@@ -37,10 +38,12 @@ export interface State {
   workflowsFilters: any[];
   history: {
     loading: boolean;
-    workflowHistory: any[];
+    workflowHistory: HistoryModel[];
     workflowFormParts: WorkflowFormPartsModel;
     leftWorkflowHistoryData: WorkflowFormDataModel;
+    leftWorkflowHistory: HistoryModel;
     rightWorkflowHistoryData: WorkflowFormDataModel;
+    rightWorkflowHistory: HistoryModel;
   };
 }
 
@@ -67,7 +70,9 @@ const initialState: State = {
     workflowHistory: [],
     workflowFormParts: undefined,
     leftWorkflowHistoryData: undefined,
+    leftWorkflowHistory: undefined,
     rightWorkflowHistoryData: undefined,
+    rightWorkflowHistory: undefined
   },
 };
 
@@ -476,8 +481,10 @@ export function workflowsReducer(state: State = initialState, action: WorkflowsA
           ...state.history,
           loading: false,
           workflowFormParts: action.payload.workflowFormParts,
-          leftWorkflowHistoryData: action.payload.leftWorkflowHistory,
-          rightWorkflowHistoryData: action.payload.rightWorkflowHistory,
+          leftWorkflowHistoryData: action.payload.leftWorkflowHistoryData,
+          leftWorkflowHistory: action.payload.leftWorkflowHistory,
+          rightWorkflowHistoryData: action.payload.rightWorkflowHistoryData,
+          rightWorkflowHistory: action.payload.rightWorkflowHistory,
         },
       };
     case WorkflowsActions.LOAD_WORKFLOWS_FROM_HISTORY_FAILURE:

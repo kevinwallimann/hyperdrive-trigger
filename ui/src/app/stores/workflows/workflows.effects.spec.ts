@@ -23,7 +23,9 @@ import * as WorkflowsActions from './workflows.actions';
 import {
   CreateWorkflow,
   DeleteWorkflow,
-  InitializeWorkflows, LoadHistoryForWorkflow, LoadWorkflowsFromHistory,
+  InitializeWorkflows,
+  LoadHistoryForWorkflow,
+  LoadWorkflowsFromHistory,
   RunWorkflow,
   StartWorkflowInitialization,
   SwitchWorkflowActiveState,
@@ -37,9 +39,12 @@ import { WorkflowModel, WorkflowModelFactory } from '../../models/workflow.model
 import { provideMockStore } from '@ngrx/store/testing';
 import {
   DynamicFormPart,
-  DynamicFormPartFactory, DynamicFormParts,
-  DynamicFormPartsFactory, FormPart,
-  FormPartFactory, PartValidation,
+  DynamicFormPartFactory,
+  DynamicFormParts,
+  DynamicFormPartsFactory,
+  FormPart,
+  FormPartFactory,
+  PartValidation,
   PartValidationFactory,
   WorkflowFormPartsModelFactory,
 } from '../../models/workflowFormParts.model';
@@ -51,8 +56,8 @@ import {
 import { workflowModes } from '../../models/enums/workflowModes.constants';
 import { SensorModelFactory, SensorTypeFactory } from '../../models/sensor.model';
 import { DagDefinitionJoinedModelFactory } from '../../models/dagDefinitionJoined.model';
-import {WorkflowJoinedModel, WorkflowJoinedModelFactory} from '../../models/workflowJoined.model';
-import {WorkflowEntryModel, WorkflowEntryModelFactory} from '../../models/workflowEntry.model';
+import { WorkflowJoinedModel, WorkflowJoinedModelFactory } from '../../models/workflowJoined.model';
+import { WorkflowEntryModel, WorkflowEntryModelFactory } from '../../models/workflowEntry.model';
 import { JobDefinitionModelFactory } from '../../models/jobDefinition.model';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
@@ -61,7 +66,7 @@ import { Router } from '@angular/router';
 import { absoluteRoutes } from '../../constants/routes.constants';
 import { JobTypeFactory } from '../../models/jobInstance.model';
 import { ApiErrorModel, ApiErrorModelFactory } from '../../models/errors/apiError.model';
-import { WorkflowHistoryService } from "../../services/workflowHistory/workflow-history.service";
+import { WorkflowHistoryService } from '../../services/workflowHistory/workflow-history.service';
 import {
   HistoryModel,
   HistoryModelFactory,
@@ -69,9 +74,9 @@ import {
   WorkflowHistoriesForComparisonModel,
   WorkflowHistoriesForComparisonModelFactory,
   WorkflowHistoryModel,
-  WorkflowHistoryModelFactory
-} from "../../models/historyModel";
-import {JobEntryModel} from "../../models/jobEntry.model";
+  WorkflowHistoryModelFactory,
+} from '../../models/historyModel';
+import { JobEntryModel } from '../../models/jobEntry.model';
 
 describe('WorkflowsEffects', () => {
   let underTest: WorkflowsEffects;
@@ -666,15 +671,8 @@ describe('WorkflowsEffects', () => {
 
   describe('historyForWorkflowLoad', () => {
     it('should successfully load history for workflow', () => {
-      const payload: number = 42;
-      const response: HistoryModel[] = [
-        HistoryModelFactory.create(
-          1,
-          new Date(Date.now()),
-          'userName',
-          {name: 'operation'}
-        )
-      ];
+      const payload = 42;
+      const response: HistoryModel[] = [HistoryModelFactory.create(1, new Date(Date.now()), 'userName', { name: 'operation' })];
 
       const action = new LoadHistoryForWorkflow(payload);
       mockActions = cold('-a', { a: action });
@@ -683,7 +681,7 @@ describe('WorkflowsEffects', () => {
       const expected = cold('--a', {
         a: {
           type: WorkflowsActions.LOAD_HISTORY_FOR_WORKFLOW_SUCCESS,
-          payload: response
+          payload: response,
         },
       });
 
@@ -827,21 +825,13 @@ describe('WorkflowsEffects', () => {
 
   describe('getWorkflowFormParts', () => {
     it('should return workflow form parts', () => {
-      const sensorDynamicPart: DynamicFormPart = DynamicFormPartFactory.create(
-        'sensorDynamicPart',
-        [FormPartFactory.create(
-          'name1', 'property1', 'type1', PartValidationFactory.create(true)
-        )]
-      );
-      const jobDynamicParts: DynamicFormPart =DynamicFormPartFactory.create(
-        'jobDynamicPart',
-        [FormPartFactory.create(
-          'name2', 'property2', 'type2', PartValidationFactory.create(true)
-        )]
-      );
-      const dynamicFormParts: DynamicFormParts = DynamicFormPartsFactory.create(
-        [sensorDynamicPart], [jobDynamicParts]
-      )
+      const sensorDynamicPart: DynamicFormPart = DynamicFormPartFactory.create('sensorDynamicPart', [
+        FormPartFactory.create('name1', 'property1', 'type1', PartValidationFactory.create(true)),
+      ]);
+      const jobDynamicParts: DynamicFormPart = DynamicFormPartFactory.create('jobDynamicPart', [
+        FormPartFactory.create('name2', 'property2', 'type2', PartValidationFactory.create(true)),
+      ]);
+      const dynamicFormParts: DynamicFormParts = DynamicFormPartsFactory.create([sensorDynamicPart], [jobDynamicParts]);
 
       const result = underTest.getWorkflowFormParts(dynamicFormParts);
       expect(result).toBeDefined();
