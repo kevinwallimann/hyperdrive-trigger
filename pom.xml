@@ -24,7 +24,7 @@
 
     <name>hyperdrive-trigger</name>
     <description>Hyperdrive-Trigger is a scheduler and GUI for hyperdrive.</description>
-    <url>https://github.com/AbsaOSS/hyperdrive-trigger</url>
+    <url>https://github.com/kevinwallimann/hyperdrive-trigger</url>
 
     <distributionManagement>
         <repository>    
@@ -34,9 +34,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/AbsaOSS/hyperdrive-trigger.git</connection>
-        <developerConnection>scm:git:ssh://github.com:AbsaOSS/hyperdrive-trigger.git</developerConnection>
-        <url>https://github.com/AbsaOSS/hyperdrive-trigger/tree/master</url>
+        <connection>scm:git:git://github.com/kevinwallimann/hyperdrive-trigger.git</connection>
+        <developerConnection>scm:git:ssh://github.com:kevinwallimann/hyperdrive-trigger.git</developerConnection>
+        <url>https://github.com/kevinwallimann/hyperdrive-trigger/tree/master</url>
         <tag>v0.2.1</tag>
     </scm>
 
